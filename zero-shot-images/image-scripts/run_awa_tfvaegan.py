@@ -16,7 +16,7 @@ os.system('''python ../train_tfvaegan_inductive.py --gammaD 10 \
 --feed_lr 0.0001 --dec_lr 0.0001 --feedback_loop 2 --a1 0.01 --a2 0.01''')
 """
 
-
+"""
 os.system('''CUDA_VISIBLE_DEVICES=1 OMP_NUM_THREADS=2 python ../train_tfvaegan_inductive.py --gammaD 10 \
 --gammaG 10 --gzsl --encoded_noise --manualSeed 9182 --preprocessing --cuda --image_embedding res101 \
 --class_embedding att --nepoch 120 --syn_num 1800 --ngh 4096 --ndh 4096 --lambda1 10 --critic_iter 5 \
@@ -24,9 +24,9 @@ os.system('''CUDA_VISIBLE_DEVICES=1 OMP_NUM_THREADS=2 python ../train_tfvaegan_i
 --batch_size 64 --nz 85 --latent_size 85 --attSize 85 --resSize 2048 \
 --lr 0.00001 --classifier_lr 0.001 --recons_weight 0.1 --freeze_dec \
 --feed_lr 0.0001 --dec_lr 0.0001 --feedback_loop 2 --a1 0.01 --a2 0.01''')
-
-
 """
+
+
 os.system('''python ../train_tfvaegan_inductive.py --gammaD 10 \
 --gammaG 10 --gzsl --encoded_noise --manualSeed 9182 --image_embedding res101 \
 --class_embedding att --nepoch 120 --syn_num 1800 --ngh 4096 --ndh 4096 --lambda1 10 --critic_iter 5 \
@@ -34,4 +34,3 @@ os.system('''python ../train_tfvaegan_inductive.py --gammaD 10 \
 --batch_size 64 --nz 85 --latent_size 85 --attSize 85 --resSize 2048 \
 --lr 0.00001 --classifier_lr 0.001 --recons_weight 0.1 --freeze_dec \
 --feed_lr 0.0001 --dec_lr 0.0001 --feedback_loop 2 --a1 0.01 --a2 0.01''')
-"""
