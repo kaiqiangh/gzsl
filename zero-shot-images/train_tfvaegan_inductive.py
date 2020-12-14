@@ -114,14 +114,14 @@ def generate_syn_feature(generator,classes, attribute,num,netF=None,netDec=None)
     return syn_feature, syn_label
 
 
-optimizer          = optim.Adam(netE.parameters(), lr=opt.lr)
-optimizerD         = optim.Adam(netD.parameters(), lr=opt.lr,betas=(opt.beta1, 0.999))
-optimizerG         = optim.Adam(netG.parameters(), lr=opt.lr,betas=(opt.beta1, 0.999))
-optimizerF         = optim.Adam(netF.parameters(), lr=opt.feed_lr, betas=(opt.beta1, 0.999))
-optimizerDec       = optim.Adam(netDec.parameters(), lr=opt.dec_lr, betas=(opt.beta1, 0.999))
+optimizer = optim.Adam(netE.parameters(), lr=opt.lr)
+optimizerD = optim.Adam(netD.parameters(), lr=opt.lr,betas=(opt.beta1, 0.999))
+optimizerG = optim.Adam(netG.parameters(), lr=opt.lr,betas=(opt.beta1, 0.999))
+optimizerF = optim.Adam(netF.parameters(), lr=opt.feed_lr, betas=(opt.beta1, 0.999))
+optimizerDec = optim.Adam(netDec.parameters(), lr=opt.dec_lr, betas=(opt.beta1, 0.999))
 
 
-def calc_gradient_penalty(netD,real_data, fake_data, input_att):
+def calc_gradient_penalty(netD, real_data, fake_data, input_att):
     alpha = torch.rand(opt.batch_size, 1)
     alpha = alpha.expand(real_data.size())
     if opt.cuda:
@@ -171,7 +171,7 @@ for epoch in range(0,opt.nepoch):
                     means, log_var = netE(input_resv, input_attv)
                     std = torch.exp(0.5 * log_var)
                     eps = torch.randn([opt.batch_size, opt.latent_size]).cpu()
-                    #eps = Variable(eps.cuda())
+                    eps = Variable(eps.cuda())
                     z = eps * std + means #torch.Size([64, 312])
                 else:
                     noise.normal_(0, 1)
@@ -220,7 +220,7 @@ for epoch in range(0,opt.nepoch):
             means, log_var = netE(input_resv, input_attv)
             std = torch.exp(0.5 * log_var)
             eps = torch.randn([opt.batch_size, opt.latent_size]).cpu()
-            #eps = Variable(eps.cuda())
+            eps = Variable(eps.cuda())
             z = eps * std + means #torch.Size([64, 312])
             if loop == 1:
                 recon_x = netG(z, c=input_attv)
@@ -266,7 +266,7 @@ for epoch in range(0,opt.nepoch):
             if opt.recons_weight > 0 and not opt.freeze_dec: # not train decoder at feedback time
                 optimizerDec.step() 
         
-    print('[%d/%d]  Loss_D: %.4f Loss_G: %.4f, Wasserstein_dist:%.4f, vae_loss_seen:%.4f'% (epoch, opt.nepoch, D_cost.data[0], G_cost.data[0], Wasserstein_D.data[0],vae_loss_seen.data[0]),end=" ")
+    print('[%d/%d]  Loss_D: %.4f Loss_G: %.4f, Wasserstein_dist:%.4f, vae_loss_seen:%.4f'% (epoch, opt.nepoch, D_cost.data, G_cost.data, Wasserstein_D.data, vae_loss_seen.data), end=" ")
     netG.eval()
     netDec.eval()
     netF.eval()
