@@ -17,7 +17,7 @@ parser.add_argument('--attSize', type=int, default=1024, help='size of semantic 
 parser.add_argument('--nz', type=int, default=312, help='size of the latent z vector')
 parser.add_argument('--ngh', type=int, default=4096, help='size of the hidden units in generator')
 parser.add_argument('--ndh', type=int, default=1024, help='size of the hidden units in discriminator')
-parser.add_argument('--nepoch', type=int, default=2000, help='number of epochs to train for')
+parser.add_argument('--nepoch', type=int, default=10, help='number of epochs to train for') # epoch 2000
 parser.add_argument('--critic_iter', type=int, default=5, help='critic iteration, following WGAN-GP')
 parser.add_argument('--lambda1', type=float, default=10, help='gradient penalty regularizer, following WGAN-GP')
 parser.add_argument('--lambda2', type=float, default=10, help='gradient penalty regularizer, following WGAN-GP')
