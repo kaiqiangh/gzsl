@@ -26,7 +26,9 @@ parser.add_argument('--feed_lr', type=float, default=0.0001, help='learning rate
 parser.add_argument('--dec_lr', type=float, default=0.0001, help='learning rate to train GANs ')
 parser.add_argument('--classifier_lr', type=float, default=0.001, help='learning rate to train softmax classifier')
 parser.add_argument('--beta1', type=float, default=0.5, help='beta1 for adam. default=0.5')
-parser.add_argument('--cuda', action='store_true', default=False, help='enables cuda')
+
+parser.add_argument('--cuda', action='store_true', default=True, help='enables cuda')
+
 parser.add_argument('--encoded_noise', action='store_true', default=False, help='enables validation mode')
 parser.add_argument('--manualSeed', type=int, help='manual seed')
 parser.add_argument('--nclass_all', type=int, default=200, help='number of all classes')
