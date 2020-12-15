@@ -171,7 +171,7 @@ for epoch in range(0,opt.nepoch):
                     means, log_var = netE(input_resv, input_attv)
                     std = torch.exp(0.5 * log_var)
                     eps = torch.randn([opt.batch_size, opt.latent_size]).cpu()
-                    eps = Variable(eps.cuda())
+                    #eps = Variable(eps.cuda())
                     z = eps * std + means #torch.Size([64, 312])
                 else:
                     noise.normal_(0, 1)
@@ -220,7 +220,7 @@ for epoch in range(0,opt.nepoch):
             means, log_var = netE(input_resv, input_attv)
             std = torch.exp(0.5 * log_var)
             eps = torch.randn([opt.batch_size, opt.latent_size]).cpu()
-            eps = Variable(eps.cuda())
+            #eps = Variable(eps.cuda())
             z = eps * std + means #torch.Size([64, 312])
             if loop == 1:
                 recon_x = netG(z, c=input_attv)
