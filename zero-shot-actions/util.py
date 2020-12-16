@@ -34,8 +34,8 @@ class DATA_LOADER(object):
             matcontent = sio.loadmat(opt.dataroot + "/" + opt.dataset + "/" + opt.dataset
                                      + "_" + opt.action_embedding + ".mat")
             #matcontent = sio.loadmat(opt.dataroot + "/" + opt.image_embedding_path + "/" + opt.image_embedding + ".mat")
-            feature = matcontent['feature'].T
-            label = matcontent['allLabels'].astype(int).squeeze() - 1
+            feature = matcontent['features'].T
+            label = matcontent['labels'].astype(int).squeeze() - 1
 
             # load action dataset splits and semantics
             matcontent = sio.loadmat(opt.dataroot + "/" + opt.dataset + "/" + opt.dataset + "_semantics/" +
@@ -61,8 +61,8 @@ class DATA_LOADER(object):
             matcontent = sio.loadmat(opt.dataroot + "/" + opt.dataset + "/"
                                      + opt.dataset + "_" + opt.action_embedding + ".mat")
             # matcontent = sio.loadmat(opt.dataroot + "/" + opt.image_embedding_path + "/" + opt.image_embedding + ".mat")
-            feature = matcontent['feature'].T
-            label = matcontent['allLabels'].astype(int).squeeze() - 1
+            feature = matcontent['features'].T
+            label = matcontent['labels'].astype(int).squeeze() - 1
 
             # load action dataset splits and semantics
             matcontent = sio.loadmat(opt.dataroot + "/" + opt.dataset + "/" + opt.dataset + "_semantics/" +
