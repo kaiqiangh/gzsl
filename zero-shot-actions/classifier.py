@@ -79,7 +79,8 @@ class CLASSIFIER:
             #print('acc %.4f' % (acc))
             if acc > best_acc:
                 best_acc = acc
-                best_model = copy.deepcopy(self.model.state_dict())
+                best_model = copy.deepcopy(self.model)
+                #best_model = copy.deepcopy(self.model.state_dict())
         return best_acc, best_model 
         
     def fit(self):
