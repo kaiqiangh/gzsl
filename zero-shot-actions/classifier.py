@@ -10,7 +10,7 @@ import pdb
 
 class CLASSIFIER:
     def __init__(self, _train_X, _train_Y, data_loader, _nclass, _cuda, _lr=0.001, _beta1=0.5, _nepoch=20,
-                 test_on_seen=False, _batch_size=100, generalized=False, use_dec=False, netDec=None, dec_size=4096, dec_hidden_size=4096):
+                 test_on_seen=False, _batch_size=100, generalized=False, netDec=None, dec_size=4096, dec_hidden_size=4096):
         self.train_X =  _train_X.clone() 
         self.train_Y = _train_Y.clone() 
         self.test_seen_feature = data_loader.test_seen_feature.clone()
@@ -26,8 +26,7 @@ class CLASSIFIER:
         self.cuda = _cuda
         self.model = LINEAR_LOGSOFTMAX_CLASSIFIER(self.input_dim, self.nclass)
         self.netDec = netDec
-        self.use_dec = use_dec
-        if self.use_dec:
+        if self.netDec:
             self.netDec.eval()
             self.input_dim = self.input_dim + dec_size
             self.input_dim += dec_hidden_size
@@ -59,8 +58,9 @@ class CLASSIFIER:
     def fit_zsl(self):
         best_acc = 0
         mean_loss = 0
-        last_loss_epoch = 1e8 
-        best_model = copy.deepcopy(self.model.state_dict())
+        last_loss_epoch = 1e8
+        best_model = copy.deepcopy(self.model)
+        #best_model = copy.deepcopy(self.model.state_dict())
         for epoch in range(self.nepoch):
             for i in range(0, self.ntrain, self.batch_size):      
                 self.model.zero_grad()
@@ -89,7 +89,8 @@ class CLASSIFIER:
         best_seen = 0
         best_unseen = 0
         out = []
-        best_model = copy.deepcopy(self.model.state_dict())
+        #best_model = copy.deepcopy(self.model.state_dict())
+        best_model = copy.deepcopy(self.model)
         # early_stopping = EarlyStopping(patience=20, verbose=True)
         for epoch in range(self.nepoch):
             for i in range(0, self.ntrain, self.batch_size):      
