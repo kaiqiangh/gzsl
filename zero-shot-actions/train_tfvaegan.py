@@ -160,7 +160,7 @@ def calc_gradient_penalty(netD, real_data, fake_data, input_att):
 
 
 best_zsl_acc = 0
-if opt.gzsl:
+if opt.gzsl_od:
     best_gzsl_acc = 0
 
 # Training loop

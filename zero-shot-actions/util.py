@@ -102,10 +102,10 @@ class DATA_LOADER(object):
                 if opt.standardization:
                     print('Standardization...')
                     scaler = preprocessing.StandardScaler()
-                    scaler_att = preprocessing.StandardScaler()
+                    #scaler_att = preprocessing.StandardScaler()
                 else:
                     scaler = preprocessing.MinMaxScaler()
-                    scaler_att = preprocessing.MinMaxScaler()
+                    #scaler_att = preprocessing.MinMaxScaler()
                 
                 _train_feature = scaler.fit_transform(feature[trainval_loc])
                 _test_seen_feature = scaler.transform(feature[test_seen_loc])
