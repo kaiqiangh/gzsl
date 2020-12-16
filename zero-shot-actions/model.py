@@ -1,9 +1,7 @@
-#author: akshitac8
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
-
 
 def weights_init(m):
     classname = m.__class__.__name__
@@ -14,7 +12,8 @@ def weights_init(m):
         m.weight.data.normal_(1.0, 0.02)
         m.bias.data.fill_(0)
 
-#Encoder
+
+# Encoder
 class Encoder(nn.Module):
 
     def __init__(self, opt):
@@ -38,13 +37,12 @@ class Encoder(nn.Module):
         log_vars = self.linear_log_var(x)
         return means, log_vars
 
-#Decoder/Generator
+
+# Decoder/Generator
 class Generator(nn.Module):
 
     def __init__(self, opt):
-
-        super(Generator,self).__init__()
-
+        super(Generator, self).__init__()
         layer_sizes = opt.decoder_layer_sizes
         latent_size=opt.latent_size
         input_size = latent_size * 2
@@ -71,7 +69,8 @@ class Generator(nn.Module):
             x = self.sigmoid(self.fc3(feedback_out))
             return x
 
-#conditional discriminator for inductive
+
+# conditional discriminator for inductive
 class Discriminator_D1(nn.Module):
     def __init__(self, opt): 
         super(Discriminator_D1, self).__init__()
@@ -86,7 +85,8 @@ class Discriminator_D1(nn.Module):
         h = self.fc2(self.hidden)
         return h
 
-#Feedback Modules
+
+# Feedback Modules
 class Feedback(nn.Module):
     def __init__(self,opt):
         super(Feedback, self).__init__()
@@ -94,6 +94,7 @@ class Feedback(nn.Module):
         self.fc2 = nn.Linear(opt.ngh, opt.ngh)
         self.lrelu = nn.LeakyReLU(0.2, True)
         self.apply(weights_init)
+
     def forward(self,x):
         self.x1 = self.lrelu(self.fc1(x))
         h = self.lrelu(self.fc2(self.x1))
@@ -128,3 +129,4 @@ class AttDec(nn.Module):
     def getLayersOutDet(self):
         #used at synthesis time and feature transformation
         return self.hidden.detach()
+

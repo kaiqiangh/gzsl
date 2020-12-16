@@ -1,11 +1,10 @@
-#author: akshitac8
 import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', default='FLO', help='FLO')
 parser.add_argument('--dataroot', default='data', help='path to dataset')
-parser.add_argument('--image_embedding', default='res101')
-parser.add_argument('--class_embedding', default='att')
+parser.add_argument('--action_embedding', default='i3d') # action visual embedding
+parser.add_argument('--class_embedding', default='att') # att or wv
 parser.add_argument('--image_embedding_path', default='')
 parser.add_argument('--manual_att', action='store_true', default=False, help='Use manual attributes')
 parser.add_argument('--syn_num', type=int, default=100, help='number features to generate per class')
@@ -28,7 +27,7 @@ parser.add_argument('--feed_lr', type=float, default=0.0001, help='learning rate
 parser.add_argument('--dec_lr', type=float, default=0.0001, help='learning rate to train GANs ')
 parser.add_argument('--classifier_lr', type=float, default=0.001, help='learning rate to train softmax classifier')
 parser.add_argument('--beta1', type=float, default=0.5, help='beta1 for adam. default=0.5')
-parser.add_argument('--cuda', action='store_true', default=True, help='enables cuda')
+parser.add_argument('--cuda', action='store_true', default=False, help='enables cuda')
 parser.add_argument('--a1', type=float, default=1.0)
 parser.add_argument('--a2', type=float, default=1.0)
 parser.add_argument('--recons_weight', type=float, default=1.0, help='recons_weight for decoder')
@@ -53,3 +52,4 @@ opt.lambda2 = opt.lambda1
 opt.encoder_layer_sizes[0] = opt.resSize
 opt.decoder_layer_sizes[-1] = opt.resSize
 opt.latent_size = opt.attSize
+

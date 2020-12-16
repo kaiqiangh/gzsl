@@ -1,4 +1,3 @@
-#author: sanath
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
@@ -8,7 +7,9 @@ import numpy as np
 import util
 
 class CLASSIFIER:
-    def __init__(self, _train_X, _train_Y, data_loader, _nclass, syn_feature, syn_label, _cuda, seen_classifier, unseen_classifier, _lr=0.001, _beta1=0.5, _nepoch=50, _batch_size=100, _hidden_size=512, netDec=None, dec_size=4096, dec_hidden_size=4096, use_mult_rep=False):
+    def __init__(self, _train_X, _train_Y, data_loader, _nclass, syn_feature, syn_label, _cuda, seen_classifier,
+                 unseen_classifier, _lr=0.001, _beta1=0.5, _nepoch=50, _batch_size=100, _hidden_size=512,
+                 netDec=None, dec_size=4096, dec_hidden_size=4096, use_mult_rep=False):
         self.train_X =  _train_X 
         self.train_Y = _train_Y 
         self.test_seen_feature = data_loader.test_seen_feature
@@ -100,8 +101,10 @@ class CLASSIFIER:
 
             # GZSL Evaluation using OD
             ent_thresh = entr_seen.data[0]/self.ntrain
-            acc_seen = self.val_gzsl(self.test_seen_feature, self.test_seen_label, self.seenclasses, ent_thresh, seen_classes=True)
-            acc_unseen = self.val_gzsl(self.test_unseen_feature, self.test_unseen_label, self.unseenclasses, ent_thresh, seen_classes=False) 
+            acc_seen = self.val_gzsl(self.test_seen_feature, self.test_seen_label,
+                                     self.seenclasses, ent_thresh, seen_classes=True)
+            acc_unseen = self.val_gzsl(self.test_unseen_feature, self.test_unseen_label,
+                                       self.unseenclasses, ent_thresh, seen_classes=False)
             H = 2*acc_seen*acc_unseen / (acc_seen+acc_unseen+1e-12)
             if H > best_H:
                 best_seen = acc_seen
@@ -139,7 +142,6 @@ class CLASSIFIER:
             endt = start + batch_size
         return self.syn_feat[start:endt], self.syn_label[start:endt]
 
-
     # GZSL eval
     def val_gzsl(self, test_X, test_label, target_classes, thresh, seen_classes): 
         start = 0
@@ -149,9 +151,11 @@ class CLASSIFIER:
         for i in range(0, ntest, self.batch_size):
             end = min(ntest, start+self.batch_size)
             if self.cuda:
-                test_Xv = Variable(test_X[start:end].cuda(), volatile=True)
+                with torch.no_grad():
+                    test_Xv = Variable(test_X[start:end].cuda())
             else:
-                test_Xv = Variable(test_X[start:end], volatile=True)
+                with torch.no_grad():
+                    test_Xv = Variable(test_X[start:end])
             output = self.model(test_Xv) 
             entropy_batch = self.criterion(output, batch=True)
             # The following evaluation holds true as seen and unseen sets are validated separately.
@@ -181,7 +185,6 @@ class CLASSIFIER:
         acc_per_class /= target_classes.size(0)
         return acc_per_class
 
-
     def compute_dec_out(self, test_X, new_size, use_mult_rep=False):
         start = 0
         ntest = test_X.size()[0]
@@ -189,15 +192,17 @@ class CLASSIFIER:
         for i in range(0, ntest, self.batch_size):
             end = min(ntest, start+self.batch_size)
             if self.cuda:
-                inputX = Variable(test_X[start:end].cuda(), volatile=True)
+                with torch.no_grad():
+                    inputX = Variable(test_X[start:end].cuda())
             else:
-                inputX = Variable(test_X[start:end], volatile=True)
+                with torch.no_grad():
+                    inputX = Variable(test_X[start:end])
             feat1 = self.netDec(inputX)
             if use_mult_rep:
                 feat2 = self.netDec.getLayersOutDet()
-                new_test_X[start:end] = torch.cat([inputX,feat1,feat2],dim=1).data.cpu()
+                new_test_X[start:end] = torch.cat([inputX, feat1, feat2], dim=1).data.cpu()
             else:
-                new_test_X[start:end] = torch.cat([inputX,feat1],dim=1).data.cpu()
+                new_test_X[start:end] = torch.cat([inputX, feat1], dim=1).data.cpu()
             
             start = end
         return new_test_X
@@ -211,7 +216,7 @@ class ODDetector(nn.Module):
         self.fc2 = nn.Linear(h_size,h_size)
         self.classifier = nn.Linear(h_size, num_classes)
     
-    def forward(self,x,center_loss=False):
+    def forward(self, x, center_loss=False):
         h = self.relu(self.fc1(x))
         h = self.relu(self.fc2(h))
         pred = self.classifier(h)
@@ -231,4 +236,5 @@ class HLoss(nn.Module):
         if neg:
             return -1.0 * b.sum()/x.size(0)
         else:
-            return  b.sum()/x.size(0)
+            return b.sum()/x.size(0)
+

@@ -28,28 +28,77 @@ class DATA_LOADER(object):
         self.epochs_completed = 0
 
     def read_matdataset(self, opt):
-        matcontent = sio.loadmat(opt.dataroot + "/" + opt.image_embedding_path + "/" + opt.image_embedding + ".mat")        
-        feature = matcontent['features'].T
-        label = matcontent['labels'].astype(int).squeeze() - 1
-        matcontent = sio.loadmat(opt.dataroot + "/" + opt.dataset + "/" + opt.class_embedding + "_splits.mat")
-        trainval_loc = matcontent['trainval_loc'].squeeze() - 1
-        train_loc = matcontent['train_loc'].squeeze() - 1
-        val_unseen_loc = matcontent['val_loc'].squeeze() - 1
-        test_seen_loc = matcontent['test_seen_loc'].squeeze() - 1
-        test_unseen_loc = matcontent['test_unseen_loc'].squeeze() - 1    
 
-        self.attribute = torch.from_numpy(matcontent['att'].T).float()
-        self.attribute /= self.attribute.pow(2).sum(1).sqrt().unsqueeze(1).expand(self.attribute.size(0),self.attribute.size(1))
-        
+        if opt.dataset == "ucf101":
+            # load visual features for ucf101
+            matcontent = sio.loadmat(opt.dataroot + "/" + opt.dataset + "/" + opt.dataset
+                                     + "_" + opt.action_embedding + ".mat")
+            #matcontent = sio.loadmat(opt.dataroot + "/" + opt.image_embedding_path + "/" + opt.image_embedding + ".mat")
+            feature = matcontent['feature'].T
+            label = matcontent['allLabels'].astype(int).squeeze() - 1
+
+            # load action dataset splits and semantics
+            matcontent = sio.loadmat(opt.dataroot + "/" + opt.dataset + "/" + opt.dataset + "_semantics/" +
+                                     "splits_1/" + "att_splits.mat")
+            #matcontent = sio.loadmat(opt.dataroot + "/" + opt.dataset + "/" + opt.class_embedding + "_splits.mat")
+            trainval_loc = matcontent['trainval_loc'].squeeze() - 1
+            train_loc = matcontent['train_loc'].squeeze() - 1
+            val_unseen_loc = matcontent['val_loc'].squeeze() - 1
+            test_seen_loc = matcontent['test_seen_loc'].squeeze() - 1
+            test_unseen_loc = matcontent['test_unseen_loc'].squeeze() - 1
+
+            if opt.class_embedding == "att":
+                self.attribute = torch.from_numpy(matcontent['origin_att'].T).float()
+                self.attribute /= self.attribute.pow(2).sum(1).sqrt().unsqueeze(1).expand(self.attribute.size(0),self.attribute.size(1))
+            elif opt.class_embedding == "wv":
+                self.attribute = torch.from_numpy(matcontent['att'].T).float()
+                self.attribute /= self.attribute.pow(2).sum(1).sqrt().unsqueeze(1).expand(self.attribute.size(0),self.attribute.size(1))
+            else:
+                print("Wrong semantics. In UCF101 splits file, att means word2vec and origin_att means attributes.")
+
+        elif opt.dataset == "hmdb51":
+            # load visual features for HMDB51
+            matcontent = sio.loadmat(opt.dataroot + "/" + opt.dataset + "/"
+                                     + opt.dataset + "_" + opt.action_embedding + ".mat")
+            # matcontent = sio.loadmat(opt.dataroot + "/" + opt.image_embedding_path + "/" + opt.image_embedding + ".mat")
+            feature = matcontent['feature'].T
+            label = matcontent['allLabels'].astype(int).squeeze() - 1
+
+            # load action dataset splits and semantics
+            matcontent = sio.loadmat(opt.dataroot + "/" + opt.dataset + "/" + opt.dataset + "_semantics/" +
+                                     "splits_1/" + "att_splits.mat")
+            # matcontent = sio.loadmat(opt.dataroot + "/" + opt.dataset + "/" + opt.class_embedding + "_splits.mat")
+            trainval_loc = matcontent['trainval_loc'].squeeze() - 1
+            train_loc = matcontent['train_loc'].squeeze() - 1
+            val_unseen_loc = matcontent['val_loc'].squeeze() - 1
+            test_seen_loc = matcontent['test_seen_loc'].squeeze() - 1
+            test_unseen_loc = matcontent['test_unseen_loc'].squeeze() - 1
+
+            if opt.class_embedding == "wv":
+                self.attribute = torch.from_numpy(matcontent['att'].T).float()
+                self.attribute /= self.attribute.pow(2).sum(1).sqrt().unsqueeze(1).expand(self.attribute.size(0),
+                                                                                          self.attribute.size(1))
+            else:
+                print("Wrong semantics. In HMDB51 splits file, att means word2vec.")
+
+        else:
+            print("Wrong dataset!")
+
+        '''
+        # use above codes
         if opt.manual_att:
+            print("Using manual_att")
             m_att = torch.from_numpy(np.load(opt.dataroot + "/ucf101_i3d/ucf101_manual_att.npy")).float()
             m_att /= m_att.pow(2).sum(1).sqrt().unsqueeze(1).expand(101,m_att.size(1))
             self.attribute = m_att
+        '''
 
         if not opt.validation:
+            print("Disable cross validation mode")
             if opt.preprocessing:
+                print('Preprocessing (MinMaxScaler)...')
                 if opt.standardization:
-                    print('standardization...')
+                    print('Standardization...')
                     scaler = preprocessing.StandardScaler()
                     scaler_att = preprocessing.StandardScaler()
                 else:
@@ -88,6 +137,7 @@ class DATA_LOADER(object):
                 self.test_seen_feature = torch.from_numpy(feature[test_seen_loc]).float() 
                 self.test_seen_label = torch.from_numpy(label[test_seen_loc]).long()
         else:
+            print ("Enable cross validation mode")
             self.train_feature = torch.from_numpy(feature[train_loc]).float()
             self.train_label = torch.from_numpy(label[train_loc]).long()
             self.test_unseen_feature = torch.from_numpy(feature[val_unseen_loc]).float()

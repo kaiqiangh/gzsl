@@ -42,7 +42,6 @@ netDec = model.AttDec(opt,opt.attSize)
 print(netE)
 print(netG)
 print(netD)
-
 print(netF)
 print(netDec)
 
@@ -51,9 +50,10 @@ input_res = torch.FloatTensor(opt.batch_size, opt.resSize)
 input_att = torch.FloatTensor(opt.batch_size, opt.attSize)
 noise = torch.FloatTensor(opt.batch_size, opt.nz)
 input_bce_att = torch.FloatTensor(opt.batch_size, opt.attSize)
-one = torch.FloatTensor([1])
+one = torch.tensor(1, dtype=torch.float)
+# one = torch.FloatTensor([1])
 mone = one * -1
-##########
+
 # Cuda
 if opt.cuda:
     netG.cuda()
@@ -67,15 +67,16 @@ if opt.cuda:
     one = one.cuda()
     mone = mone.cuda()
 
+
 def loss_fn(recon_x, x, mean, log_var):
     #vae loss L_bce + L_kl
     BCE = torch.nn.functional.binary_cross_entropy(recon_x+1e-12, x.detach(), size_average=False)
     BCE = BCE.sum()/ x.size(0)
     KLD = -0.5 * torch.sum(1 + log_var - mean.pow(2) - log_var.exp())/ x.size(0)
-    return (BCE + KLD)
+    return BCE + KLD
 
 def WeightedL1(pred, gt, bce=False, gt_bce=None):
-    #semantic embedding cycle-consistency loss
+    # semantic embedding cycle-consistency loss
     if bce:
         BCE = torch.nn.functional.binary_cross_entropy(pred+1e-12, gt_bce.detach(),size_average=False)
         return BCE.sum()/pred.size(0)
@@ -115,22 +116,30 @@ def generate_syn_feature(netG, classes, attribute, num, netF=None, netDec=None):
         #replicate the attributes
         syn_att.copy_(iclass_att.repeat(num, 1))
         syn_noise.normal_(0, 1)
-        syn_noisev = Variable(syn_noise,volatile=True)
-        syn_attv = Variable(syn_att,volatile=True)
+
+        with torch.no_grad():
+            syn_noisev = Variable(syn_noise)
+            syn_attv = Variable(syn_att)
+
+        # Original codes
+        # syn_noisev = Variable(syn_noise,volatile=True)
+        # syn_attv = Variable(syn_att,volatile=True)
+
         output = feedback_module(gen_out=syn_noisev, att=syn_attv, netG=netG, netDec=netDec, netF=netF)
         syn_feature.narrow(0, i*num, num).copy_(output.data.cpu())
         syn_label.narrow(0, i*num, num).fill_(iclass)
     return syn_feature, syn_label
 
-#setup optimizer
-optimizerD         = optim.Adam(netD.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
-optimizerE         = optim.Adam(netE.parameters(), lr=opt.lr)
-optimizerG         = optim.Adam(netG.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
-optimizerF         = optim.Adam(netF.parameters(), lr=opt.feed_lr, betas=(opt.beta1, 0.999))
-optimizerDec       = optim.Adam(netDec.parameters(), lr=opt.dec_lr, betas=(opt.beta1, 0.999))
+
+# setup optimizer
+optimizerD = optim.Adam(netD.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
+optimizerE = optim.Adam(netE.parameters(), lr=opt.lr)
+optimizerG = optim.Adam(netG.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
+optimizerF = optim.Adam(netF.parameters(), lr=opt.feed_lr, betas=(opt.beta1, 0.999))
+optimizerDec = optim.Adam(netDec.parameters(), lr=opt.dec_lr, betas=(opt.beta1, 0.999))
 
 
-def calc_gradient_penalty(netD,real_data, fake_data, input_att):
+def calc_gradient_penalty(netD, real_data, fake_data, input_att):
     alpha = torch.rand(opt.batch_size, 1)
     alpha = alpha.expand(real_data.size())
     if opt.cuda:
@@ -149,18 +158,19 @@ def calc_gradient_penalty(netD,real_data, fake_data, input_att):
     gradient_penalty = ((gradients.norm(2, dim=1) - 1) ** 2).mean() * opt.lambda1
     return gradient_penalty
 
+
 best_zsl_acc = 0
 if opt.gzsl:
     best_gzsl_acc = 0
 
-#Training loop
+# Training loop
 for epoch in range(0,opt.nepoch):
-    #feedback training loop
+    # feedback training loop
     for loop in range(0,opt.feedback_loop):
         for i in range(0, data.ntrain, opt.batch_size):
-            #########Discriminator training ##############
+            ######### Discriminator training ##############
 
-            #unfreeze discrimator
+            # unfreeze discrimator
             for p in netD.parameters():
                 p.requires_grad = True
 
@@ -189,14 +199,15 @@ for epoch in range(0,opt.nepoch):
                     means, log_var = netE(input_resv, input_attv)
                     std = torch.exp(0.5 * log_var)
                     eps = torch.randn([opt.batch_size, opt.latent_size])
-                    if opt.cuda: eps = eps.cuda()
+                    if opt.cuda:
+                        eps = eps.cuda()
                     eps = Variable(eps)
                     latent_code = eps * std + means
                 else:
                     noise.normal_(0, 1)
                     latent_code = Variable(noise)
 
-                #feedback loop
+                # feedback loop
                 if loop == 1:
                     fake = feedback_module(gen_out=latent_code, att=input_attv, netG=netG, netDec=netDec, netF=netF)
                 else:
@@ -209,7 +220,9 @@ for epoch in range(0,opt.nepoch):
                 gp_sum += gradient_penalty.data
                 gradient_penalty.backward()         
                 Wasserstein_D = criticD_real - criticD_fake
-                D_cost = criticD_fake - criticD_real + gradient_penalty #add Y here and #add vae reconstruction loss
+                # add Y here
+                # And add vae reconstruction loss
+                D_cost = criticD_fake - criticD_real + gradient_penalty
                 optimizerD.step()
 
             # Adaptive lambda
@@ -219,7 +232,7 @@ for epoch in range(0,opt.nepoch):
             elif (gp_sum < 1.001).sum() > 0:
                 opt.lambda1 /= 1.1
 
-            #############netG training ##############
+            ############# netG training ##############
             # Train netG and Decoder
             for p in netD.parameters():
                 p.requires_grad = False
@@ -233,11 +246,12 @@ for epoch in range(0,opt.nepoch):
             netF.zero_grad()
             input_resv = Variable(input_res)
             input_attv = Variable(input_att)
-            #This is outside the opt.encoded_noise condition because of the vae loss
+            # This is outside the opt.encoded_noise condition because of the vae loss
             means, log_var = netE(input_resv, input_attv)
             std = torch.exp(0.5 * log_var)
             eps = torch.randn([opt.batch_size, opt.latent_size])
-            if opt.cuda: eps = eps.cuda()
+            if opt.cuda:
+                eps = eps.cuda()
             eps = Variable(eps)
             latent_code = eps * std + means
             if loop == 1:
@@ -258,7 +272,7 @@ for epoch in range(0,opt.nepoch):
                     fake = feedback_module(gen_out=latent_code_noise, att=input_attv, netG=netG, netDec=netDec, netF=netF)
                 else:
                     fake = netG(latent_code_noise, c=input_attv)
-                criticG_fake = netD(fake,input_attv).mean()    
+                criticG_fake = netD(fake, input_attv).mean()
             
             G_cost = -criticG_fake
             # Add vae loss and generator loss
@@ -276,49 +290,62 @@ for epoch in range(0,opt.nepoch):
             if opt.recons_weight > 0 and not opt.freeze_dec: # not train decoder at feedback time
                 optimizerDec.step()        
     # Print losses
-    print('[%d/%d]  Loss_D: %.4f Loss_G: %.4f, Wasserstein_dist:%.4f, vae_loss_seen:%.4f'% \
-    (epoch, opt.nepoch, D_cost.data[0], G_cost.data[0], Wasserstein_D.data[0],vae_loss_seen.data[0]),end=" ")
+    print('[%d/%d]  Loss_D: %.4f Loss_G: %.4f, Wasserstein_dist:%.4f, vae_loss_seen:%.4f'
+          % (epoch, opt.nepoch, D_cost.data, G_cost.data, Wasserstein_D.data, vae_loss_seen.data), end=" ")
     # Evaluation
     netG.eval()
     netDec.eval()
     netF.eval()
-    syn_feature, syn_label = generate_syn_feature(netG, data.unseenclasses, data.attribute, opt.syn_num, netF=netF, netDec=netDec)
+    syn_feature, syn_label = generate_syn_feature(netG, data.unseenclasses, data.attribute, opt.syn_num,
+                                                  netF=netF, netDec=netDec)
     # Generalized zero-shot learning
     if opt.gzsl_od:
         # OD based GZSL
         seen_class = data.seenclasses.size(0)
-        clsu = classifier.CLASSIFIER(syn_feature, util.map_label(syn_label, data.unseenclasses), data, data.unseenclasses.size(0), \
-                                    opt.cuda, _nepoch=25, _batch_size=opt.syn_num, use_dec=opt.zsl_dec, netDec=netDec, dec_size=opt.attSize, \
-                                    dec_hidden_size=4096, use_mult_rep=opt.use_mult_rep)
-        clss = classifier.CLASSIFIER(data.train_feature, util.map_label(data.train_label,data.seenclasses), data, seen_class, opt.cuda, \
-                                    _nepoch=25, _batch_size=opt.syn_num, test_on_seen=True, use_dec=opt.zsl_dec, netDec=netDec, \
-                                    dec_size=opt.attSize, dec_hidden_size=4096, use_mult_rep=opt.use_mult_rep)
-        clsg = classifier_entropy.CLASSIFIER(data.train_feature, util.map_label(data.train_label,data.seenclasses), data, seen_class, \
-                                            syn_feature, syn_label, opt.cuda, clss, clsu, _batch_size=128, use_dec=opt.zsl_dec, \
-                                            netDec=netDec, dec_size=opt.attSize, dec_hidden_size=4096, use_mult_rep=opt.use_mult_rep)
+        clsu = classifier.CLASSIFIER(syn_feature, util.map_label(syn_label, data.unseenclasses),
+                                     data, data.unseenclasses.size(0),
+                                     opt.cuda, _nepoch=25, _batch_size=opt.syn_num, use_dec=opt.zsl_dec,
+                                     netDec=netDec, dec_size=opt.attSize,
+                                     dec_hidden_size=4096, use_mult_rep=opt.use_mult_rep)
+
+        clss = classifier.CLASSIFIER(data.train_feature, util.map_label(data.train_label, data.seenclasses),
+                                     data, seen_class, opt.cuda,
+                                     _nepoch=25, _batch_size=opt.syn_num, test_on_seen=True,
+                                     use_dec=opt.zsl_dec, netDec=netDec,
+                                     dec_size=opt.attSize, dec_hidden_size=4096, use_mult_rep=opt.use_mult_rep)
+
+        clsg = classifier_entropy.CLASSIFIER(data.train_feature, util.map_label(data.train_label, data.seenclasses),
+                                             data, seen_class,
+                                             syn_feature, syn_label, opt.cuda, clss, clsu,
+                                             _batch_size=128, use_dec=opt.zsl_dec,
+                                             netDec=netDec, dec_size=opt.attSize,
+                                             dec_hidden_size=4096, use_mult_rep=opt.use_mult_rep)
+
         if best_gzsl_acc < clsg.H:
             best_acc_seen, best_acc_unseen, best_gzsl_acc = clsg.acc_seen, clsg.acc_unseen, clsg.H
         print('GZSL-OD: Acc seen=%.4f, Acc unseen=%.4f, h=%.4f' % (clsg.acc_seen, clsg.acc_unseen, clsg.H))
 
     # Zero-shot learning
     # Train ZSL classifier
-    zsl_cls = classifier.CLASSIFIER(syn_feature, util.map_label(syn_label, data.unseenclasses), data, data.unseenclasses.size(0), \
-                                    opt.cuda, opt.classifier_lr, 0.5, 25, opt.syn_num, generalized=False, use_dec=opt.zsl_dec, netDec=netDec, \
+    zsl_cls = classifier.CLASSIFIER(syn_feature, util.map_label(syn_label, data.unseenclasses),
+                                    data, data.unseenclasses.size(0),
+                                    opt.cuda, opt.classifier_lr, 0.5, 25, opt.syn_num,
+                                    generalized=False, use_dec=opt.zsl_dec, netDec=netDec,
                                     dec_size=opt.attSize, dec_hidden_size=4096, use_mult_rep=opt.use_mult_rep)
     acc = zsl_cls.acc
     if best_zsl_acc < acc:
         best_zsl_acc = acc
-    print('ZSL: unseen accuracy=%.4f' % (acc))
+    print('ZSL: unseen accuracy=%.4f' % acc)
     # reset modules to training mode
     netG.train()
     netDec.train()
     netF.train()
 
-#Best results
+# Best results
 print('Dataset', opt.dataset)
 print('the best ZSL unseen accuracy is', best_zsl_acc)
 if opt.gzsl_od:
     print('the best GZSL seen accuracy is', best_acc_seen)
     print('the best GZSL unseen accuracy is', best_acc_unseen)
     print('the best GZSL H is', best_gzsl_acc)
-    
+

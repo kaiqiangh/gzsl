@@ -1,4 +1,3 @@
-#author: akshitac8
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
@@ -111,7 +110,7 @@ class CLASSIFIER:
                 best_seen = acc_seen
                 best_unseen = acc_unseen
                 best_H = H
-        return best_seen, best_unseen, best_H,epoch
+        return best_seen, best_unseen, best_H, epoch
                      
     def next_batch(self, batch_size):
         start = self.index_in_epoch
@@ -139,7 +138,7 @@ class CLASSIFIER:
             Y_new_part = self.train_Y[start:end]
             #print(start, end)
             if rest_num_examples > 0:
-                return torch.cat((X_rest_part, X_new_part), 0) , torch.cat((Y_rest_part, Y_new_part), 0)
+                return torch.cat((X_rest_part, X_new_part), 0), torch.cat((Y_rest_part, Y_new_part), 0)
             else:
                 return X_new_part, Y_new_part
         else:
@@ -149,7 +148,6 @@ class CLASSIFIER:
             # from index start to index end-1
             return self.train_X[start:end], self.train_Y[start:end]
 
-
     def val_gzsl(self, test_X, test_label, target_classes): 
         start = 0
         ntest = test_X.size()[0]
@@ -157,9 +155,11 @@ class CLASSIFIER:
         for i in range(0, ntest, self.batch_size):
             end = min(ntest, start+self.batch_size)
             if self.cuda:
-                inputX = Variable(test_X[start:end].cuda(), volatile=True)
+                with torch.no_grad():
+                    inputX = Variable(test_X[start:end].cuda())
             else:
-                inputX = Variable(test_X[start:end], volatile=True)
+                with torch.no_grad():
+                    inputX = Variable(test_X[start:end])
             output = self.model(inputX)  
             _, predicted_label[start:end] = torch.max(output.data, 1)
             start = end
@@ -183,23 +183,25 @@ class CLASSIFIER:
         for i in range(0, ntest, self.batch_size):
             end = min(ntest, start+self.batch_size)
             if self.cuda:
-                inputX = Variable(test_X[start:end].cuda(), volatile=True)
+                with torch.no_grad():
+                    inputX = Variable(test_X[start:end].cuda())
             else:
-                inputX = Variable(test_X[start:end], volatile=True)
+                with torch.no_grad():
+                    inputX = Variable(test_X[start:end])
             output = self.model(inputX) 
             _, predicted_label[start:end] = torch.max(output.data, 1)
             start = end
 
-        acc = self.compute_per_class_acc(util.map_label(test_label, target_classes), predicted_label, target_classes.size(0))
+        acc = self.compute_per_class_acc(util.map_label(test_label, target_classes),
+                                         predicted_label, target_classes.size(0))
         return acc
 
     def compute_per_class_acc(self, test_label, predicted_label, nclass):
         acc_per_class = torch.FloatTensor(nclass).fill_(0)
         for i in range(nclass):
             idx = (test_label == i)
-            acc_per_class[i] = torch.sum(test_label[idx]==predicted_label[idx]) / torch.sum(idx)
+            acc_per_class[i] = torch.sum(test_label[idx] == predicted_label[idx]) / torch.sum(idx)
         return acc_per_class.mean() 
-
 
     def compute_dec_out(self, test_X, new_size):
         start = 0
@@ -208,12 +210,14 @@ class CLASSIFIER:
         for i in range(0, ntest, self.batch_size):
             end = min(ntest, start+self.batch_size)
             if self.cuda:
-                inputX = Variable(test_X[start:end].cuda(), volatile=True)
+                with torch.no_grad():
+                    inputX = Variable(test_X[start:end].cuda())
             else:
-                inputX = Variable(test_X[start:end], volatile=True)
+                with torch.no_grad():
+                    inputX = Variable(test_X[start:end])
             feat1 = self.netDec(inputX)
             feat2 = self.netDec.getLayersOutDet()
-            new_test_X[start:end] = torch.cat([inputX,feat1,feat2],dim=1).data.cpu()
+            new_test_X[start:end] = torch.cat([inputX, feat1, feat2], dim=1).data.cpu()
             start = end
         return new_test_X
 
@@ -223,6 +227,8 @@ class LINEAR_LOGSOFTMAX_CLASSIFIER(nn.Module):
         super(LINEAR_LOGSOFTMAX_CLASSIFIER, self).__init__()
         self.fc = nn.Linear(input_dim, nclass)
         self.logic = nn.LogSoftmax(dim=1)
+
     def forward(self, x): 
         o = self.logic(self.fc(x))
         return o
+

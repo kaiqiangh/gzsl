@@ -32,11 +32,11 @@ class DATA_LOADER(object):
 
     def read_matdataset(self, opt):
         #matcontent = sio.loadmat(opt.dataroot + "/" + opt.dataset + "/" + opt.image_embedding + ".mat")
-        matcontent = sio.loadmat("/content/drive/MyDrive/res101.mat")
+        matcontent = sio.loadmat("/content/drive/MyDrive/colab_data/res101.mat")
         feature = matcontent['features'].T
         label = matcontent['labels'].astype(int).squeeze() - 1
         #matcontent = sio.loadmat(opt.dataroot + "/" + opt.dataset + "/" + opt.class_embedding + "_splits.mat")
-        matcontent = sio.loadmat("/content/drive/MyDrive/att_splits.mat")
+        matcontent = sio.loadmat("/content/drive/MyDrive/colab_data/att_splits.mat")
         trainval_loc = matcontent['trainval_loc'].squeeze() - 1
         train_loc = matcontent['train_loc'].squeeze() - 1
         val_unseen_loc = matcontent['val_loc'].squeeze() - 1
