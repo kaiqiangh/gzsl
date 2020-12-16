@@ -10,7 +10,7 @@ import pdb
 
 class CLASSIFIER:
     def __init__(self, _train_X, _train_Y, data_loader, _nclass, _cuda, _lr=0.001, _beta1=0.5, _nepoch=20,
-                 test_on_seen=False, _batch_size=100, generalized=False, use_dec=True, netDec=None, dec_size=4096, dec_hidden_size=4096):
+                 test_on_seen=False, _batch_size=100, generalized=False, use_dec=False, netDec=None, dec_size=4096, dec_hidden_size=4096):
         self.train_X =  _train_X.clone() 
         self.train_Y = _train_Y.clone() 
         self.test_seen_feature = data_loader.test_seen_feature.clone()
@@ -26,7 +26,7 @@ class CLASSIFIER:
         self.cuda = _cuda
         self.model = LINEAR_LOGSOFTMAX_CLASSIFIER(self.input_dim, self.nclass)
         self.netDec = netDec
-        self.use_dec = use_dec;
+        self.use_dec = use_dec
         if self.use_dec:
             self.netDec.eval()
             self.input_dim = self.input_dim + dec_size
