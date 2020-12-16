@@ -48,7 +48,7 @@ class DATA_LOADER(object):
             test_unseen_loc = matcontent['test_unseen_loc'].squeeze() - 1
 
             if opt.class_embedding == "att":
-                self.attribute = torch.from_numpy(matcontent['origin_att'].T).float()
+                self.attribute = torch.from_numpy(matcontent['original_att'].T).float()
                 self.attribute /= self.attribute.pow(2).sum(1).sqrt().unsqueeze(1).expand(self.attribute.size(0),self.attribute.size(1))
             elif opt.class_embedding == "wv":
                 self.attribute = torch.from_numpy(matcontent['att'].T).float()
