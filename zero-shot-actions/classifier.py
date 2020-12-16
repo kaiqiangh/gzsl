@@ -75,6 +75,7 @@ class CLASSIFIER:
                 mean_loss += loss.data
                 loss.backward()
                 self.optimizer.step()
+            self.model.eval()
                 #print('Training classifier loss= ', loss.data[0])
             acc = self.val(self.test_unseen_feature, self.test_unseen_label, self.unseenclasses)
             #print('acc %.4f' % (acc))
@@ -107,6 +108,7 @@ class CLASSIFIER:
                 self.optimizer.step()
             acc_seen = 0
             acc_unseen = 0
+            self.model.eval()
             acc_seen = self.val_gzsl(self.test_seen_feature, self.test_seen_label, self.seenclasses)
             acc_unseen = self.val_gzsl(self.test_unseen_feature, self.test_unseen_label, self.unseenclasses)
             H = 2*acc_seen*acc_unseen / (acc_seen+acc_unseen)
@@ -114,6 +116,7 @@ class CLASSIFIER:
                 best_seen = acc_seen
                 best_unseen = acc_unseen
                 best_H = H
+                best_model = copy.deepcopy(self.model)
         return best_seen, best_unseen, best_H, epoch, best_model
                      
     def next_batch(self, batch_size):
