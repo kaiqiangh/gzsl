@@ -48,6 +48,7 @@ class DATA_LOADER(object):
 
         if not opt.validation:
             if opt.preprocessing:
+                print('preprocessing...')
                 if opt.standardization:
                     print('standardization...')
                     scaler = preprocessing.StandardScaler()
