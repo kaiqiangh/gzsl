@@ -98,7 +98,7 @@ def sample():
     #batch_feature, batch_att, batch_bce_att = data.next_seen_batch(opt.batch_size)
     batch_feature, batch_att = data.next_seen_batch(opt.batch_size)
     input_res.copy_(batch_feature)
-    input_att.copy_()    
+    input_att.copy_(batch_att)
     #input_bce_att.copy_(batch_bce_att, batch_att)
 
 def generate_syn_feature(netG, classes, attribute, num, netF=None, netDec=None):
