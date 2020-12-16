@@ -10,7 +10,7 @@ import pdb
 
 class CLASSIFIER:
     def __init__(self, _train_X, _train_Y, data_loader, _nclass, _cuda, _lr=0.001, _beta1=0.5, _nepoch=20,
-                 test_on_seen=False, _batch_size=100, generalized=True, netDec=None, dec_size=4096, dec_hidden_size=4096):
+                 test_on_seen=False, _batch_size=100, generalized=False, netDec=None, dec_size=4096, dec_hidden_size=4096):
         self.train_X =  _train_X.clone() 
         self.train_Y = _train_Y.clone() 
         self.test_seen_feature = data_loader.test_seen_feature.clone()
@@ -51,9 +51,9 @@ class CLASSIFIER:
         self.epochs_completed = 0
         self.ntrain = self.train_X.size()[0]
         if generalized:
-            self.acc_seen, self.acc_unseen, self.H, self.epoch= self.fit()
+            self.acc_seen, self.acc_unseen, self.H, self.epoch = self.fit()
         else:
-            self.acc,self.best_model = self.fit_zsl() 
+            self.acc, self.best_model = self.fit_zsl()
 
     def fit_zsl(self):
         best_acc = 0
