@@ -100,7 +100,7 @@ class CLASSIFIER:
                 self.od_optimizer.step()
 
             # GZSL Evaluation using OD
-            ent_thresh = entr_seen.data[0]/self.ntrain
+            ent_thresh = entr_seen.data/self.ntrain
             acc_seen = self.val_gzsl(self.test_seen_feature, self.test_seen_label,
                                      self.seenclasses, ent_thresh, seen_classes=True)
             acc_unseen = self.val_gzsl(self.test_unseen_feature, self.test_unseen_label,

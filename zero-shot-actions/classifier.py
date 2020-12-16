@@ -51,7 +51,7 @@ class CLASSIFIER:
         self.epochs_completed = 0
         self.ntrain = self.train_X.size()[0]
         if generalized:
-            self.acc_seen, self.acc_unseen, self.H, self.epoch = self.fit()
+            self.acc_seen, self.acc_unseen, self.H, self.epoch, self.best_model= self.fit()
         else:
             self.acc, self.best_model = self.fit_zsl()
 
@@ -71,7 +71,7 @@ class CLASSIFIER:
                 labelv = Variable(self.label)
                 output = self.model(inputv)
                 loss = self.criterion(output, labelv)
-                mean_loss += loss.data[0]
+                mean_loss += loss.data
                 loss.backward()
                 self.optimizer.step()
                 #print('Training classifier loss= ', loss.data[0])
@@ -111,7 +111,7 @@ class CLASSIFIER:
                 best_seen = acc_seen
                 best_unseen = acc_unseen
                 best_H = H
-        return best_seen, best_unseen, best_H, epoch
+        return best_seen, best_unseen, best_H, epoch, best_model
                      
     def next_batch(self, batch_size):
         start = self.index_in_epoch
