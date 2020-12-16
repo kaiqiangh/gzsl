@@ -4,13 +4,13 @@ from torch.autograd import Variable
 import torch.optim as optim
 import numpy as np
 import util
-from sklearn.preprocessing import MinMaxScaler 
 import sys
 import copy
 import pdb
 
 class CLASSIFIER:
-    def __init__(self, _train_X, _train_Y, data_loader, _nclass, _cuda, _lr=0.001, _beta1=0.5, _nepoch=20, _batch_size=100, generalized=True, netDec=None, dec_size=4096, dec_hidden_size=4096):
+    def __init__(self, _train_X, _train_Y, data_loader, _nclass, _cuda, _lr=0.001, _beta1=0.5, _nepoch=20,
+                 test_on_seen=False, _batch_size=100, generalized=True, netDec=None, dec_size=4096, dec_hidden_size=4096):
         self.train_X =  _train_X.clone() 
         self.train_Y = _train_Y.clone() 
         self.test_seen_feature = data_loader.test_seen_feature.clone()
@@ -41,6 +41,7 @@ class CLASSIFIER:
         self.lr = _lr
         self.beta1 = _beta1
         self.optimizer = optim.Adam(self.model.parameters(), lr=_lr, betas=(_beta1, 0.999))
+        self.test_on_seen = test_on_seen
         if self.cuda:
             self.model.cuda()
             self.criterion.cuda()

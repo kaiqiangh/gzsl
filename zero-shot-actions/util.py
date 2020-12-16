@@ -130,8 +130,7 @@ class DATA_LOADER(object):
                 #mx_att = temp_att.max()
                 #temp_att.mul_(1/mx)
                 #self.bce_attribute = temp_att
-                #self.bce_attribute_norm = self.bce_attribute/self.bce_attribute.pow(2).sum(1).sqrt().unsqueeze(1) \
-                 #                           .expand(self.attribute.size(0), self.attribute.size(1))
+                #self.bce_attribute_norm = self.bce_attribute/self.bce_attribute.pow(2).sum(1).sqrt().unsqueeze(1).expand(self.attribute.size(0), self.attribute.size(1))
 
             else:
                 self.train_feature = torch.from_numpy(feature[trainval_loc]).float()
