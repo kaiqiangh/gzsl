@@ -49,7 +49,7 @@ print(netDec)
 input_res = torch.FloatTensor(opt.batch_size, opt.resSize)
 input_att = torch.FloatTensor(opt.batch_size, opt.attSize)
 noise = torch.FloatTensor(opt.batch_size, opt.nz)
-input_bce_att = torch.FloatTensor(opt.batch_size, opt.attSize)
+#input_bce_att = torch.FloatTensor(opt.batch_size, opt.attSize)
 one = torch.tensor(1, dtype=torch.float)
 # one = torch.FloatTensor([1])
 mone = one * -1
@@ -63,7 +63,7 @@ if opt.cuda:
     netF.cuda()
     input_res = input_res.cuda()
     noise, input_att = noise.cuda(), input_att.cuda()
-    input_bce_att = input_bce_att.cuda()
+    #input_bce_att = input_bce_att.cuda()
     one = one.cuda()
     mone = mone.cuda()
 
@@ -95,10 +95,11 @@ def feedback_module(gen_out, att, netG, netDec, netF):
 
 def sample():
     #data loader
-    batch_feature, batch_att, batch_bce_att = data.next_seen_batch(opt.batch_size)
+    #batch_feature, batch_att, batch_bce_att = data.next_seen_batch(opt.batch_size)
+    batch_feature, batch_att = data.next_seen_batch(opt.batch_size)
     input_res.copy_(batch_feature)
     input_att.copy_()    
-    input_bce_att.copy_(batch_bce_att, batch_att)
+    #input_bce_att.copy_(batch_bce_att, batch_att)
 
 def generate_syn_feature(netG, classes, attribute, num, netF=None, netDec=None):
     #unseen feature synthesis
@@ -165,6 +166,7 @@ if opt.gzsl_od:
 
 # Training loop
 for epoch in range(0,opt.nepoch):
+    print("Start Training: ")
     # feedback training loop
     for loop in range(0,opt.feedback_loop):
         for i in range(0, data.ntrain, opt.batch_size):
@@ -189,7 +191,8 @@ for epoch in range(0,opt.nepoch):
                 #Training the auxillary module
                 netDec.zero_grad()
                 recons = netDec(input_resv)
-                R_cost = opt.recons_weight*WeightedL1(recons, input_attv, bce=opt.bce_att, gt_bce=Variable(input_bce_att)) 
+                R_cost = opt.recons_weight*WeightedL1(recons, input_attv)
+                #R_cost = opt.recons_weight*WeightedL1(recons, input_attv, bce=opt.bce_att, gt_bce=Variable(input_bce_att))
                 R_cost.backward()
                 optimizerDec.step()
                 criticD_real = netD(input_resv, input_attv)
@@ -279,7 +282,8 @@ for epoch in range(0,opt.nepoch):
             errG += opt.gammaG*G_cost
             netDec.zero_grad()
             recons_fake = netDec(fake)
-            R_cost = WeightedL1(recons_fake, input_attv, bce=opt.bce_att, gt_bce=Variable(input_bce_att))
+            #R_cost = WeightedL1(recons_fake, input_attv, bce=opt.bce_att, gt_bce=Variable(input_bce_att))
+            R_cost = WeightedL1(recons_fake, input_attv)
             # Add reconstruction loss
             errG += opt.recons_weight * R_cost
             errG.backward()
