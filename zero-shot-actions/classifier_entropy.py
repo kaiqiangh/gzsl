@@ -153,9 +153,11 @@ class CLASSIFIER:
             if self.cuda:
                 with torch.no_grad():
                     test_Xv = Variable(test_X[start:end].cuda())
+                    print("test_Xv", test_Xv)
             else:
                 with torch.no_grad():
                     test_Xv = Variable(test_X[start:end])
+                    print("test_Xv", test_Xv)
             output = self.model(test_Xv) 
             entropy_batch = self.criterion(output, batch=True)
             # The following evaluation holds true as seen and unseen sets are validated separately.
