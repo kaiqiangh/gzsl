@@ -160,9 +160,9 @@ class CLASSIFIER:
             entropy_batch = self.criterion(output, batch=True)
             # The following evaluation holds true as seen and unseen sets are validated separately.
             if seen_classes:
-                pred = self.seen_cls_model(test_Xv)
+                pred = self.seen_cls_model[test_Xv]
             else:
-                pred = self.unseen_cls_model(test_Xv)
+                pred = self.unseen_cls_model[test_Xv]
                 
             _, pred = torch.max(pred.data, 1)
             entropy.extend(entropy_batch.data.view(-1).cpu().numpy())

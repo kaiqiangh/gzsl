@@ -51,7 +51,7 @@ class CLASSIFIER:
         self.epochs_completed = 0
         self.ntrain = self.train_X.size()[0]
         if generalized:
-            self.acc_seen, self.acc_unseen, self.H, self.epoch, self.best_model= self.fit()
+            self.acc_seen, self.acc_unseen, self.H, self.epoch, self.best_model = self.fit()
         else:
             self.acc, self.best_model = self.fit_zsl()
 
