@@ -59,8 +59,8 @@ class CLASSIFIER:
         best_acc = 0
         mean_loss = 0
         last_loss_epoch = 1e8
-        best_model = copy.deepcopy(self.model)
-        #best_model = copy.deepcopy(self.model.state_dict())
+        #best_model = copy.deepcopy(self.model)
+        best_model = copy.deepcopy(self.model.state_dict())
         for epoch in range(self.nepoch):
             for i in range(0, self.ntrain, self.batch_size):      
                 self.model.zero_grad()
@@ -81,8 +81,8 @@ class CLASSIFIER:
             #print('acc %.4f' % (acc))
             if acc > best_acc:
                 best_acc = acc
-                best_model = copy.deepcopy(self.model)
-                #best_model = copy.deepcopy(self.model.state_dict())
+                #best_model = copy.deepcopy(self.model)
+                best_model = copy.deepcopy(self.model.state_dict())
         return best_acc, best_model 
         
     def fit(self):
@@ -90,8 +90,8 @@ class CLASSIFIER:
         best_seen = 0
         best_unseen = 0
         out = []
-        #best_model = copy.deepcopy(self.model.state_dict())
-        best_model = copy.deepcopy(self.model)
+        best_model = copy.deepcopy(self.model.state_dict())
+        #best_model = copy.deepcopy(self.model)
         # early_stopping = EarlyStopping(patience=20, verbose=True)
         for epoch in range(self.nepoch):
             for i in range(0, self.ntrain, self.batch_size):      
@@ -116,7 +116,7 @@ class CLASSIFIER:
                 best_seen = acc_seen
                 best_unseen = acc_unseen
                 best_H = H
-                best_model = copy.deepcopy(self.model)
+                best_model = copy.deepcopy(self.model.state_dict())
         return best_seen, best_unseen, best_H, epoch, best_model
                      
     def next_batch(self, batch_size):
