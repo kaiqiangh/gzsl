@@ -153,7 +153,7 @@ class CLASSIFIER:
             if self.cuda:
                 with torch.no_grad():
                     test_Xv = Variable(test_X[start:end].cuda())
-                    print("test_Xv", test_Xv)
+                    print("test_Xv", test_Xv.shape)
             else:
                 with torch.no_grad():
                     test_Xv = Variable(test_X[start:end])
