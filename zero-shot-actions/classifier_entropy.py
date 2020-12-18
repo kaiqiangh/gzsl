@@ -170,11 +170,12 @@ class CLASSIFIER:
 
                 _, pred = torch.max(pred.data, 1)
                 entropy.extend(entropy_batch.data.view(-1).cpu().numpy())
+                print(entropy)
                 predicted_label[start:end] = pred.cpu()
             start = end
 
         # The following threshold works as seen and unseen sets are validated separately.
-        seen_mask = torch.Tensor(np.array(entropy), device=torch.device('cpu')) < thresh
+        seen_mask = torch.Tensor(np.array(entropy)) < thresh
         if not seen_classes:
             seen_mask = 1 - seen_mask
         acc = self.compute_per_class_acc_gzsl(test_label, predicted_label, target_classes, seen_mask)
