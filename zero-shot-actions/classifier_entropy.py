@@ -168,10 +168,10 @@ class CLASSIFIER:
                 #pred = self.seen_cls_model['fc.weight'] * test_Xv + self.unseen_cls_model['fc.bias']
                 #print("pred: ", pred)
 
-                _, pred = torch.max(pred.data, 1)
-                entropy.extend(entropy_batch.data.view(-1).cpu().numpy())
-                print(entropy)
-                predicted_label[start:end] = pred.cpu()
+            _, pred = torch.max(pred.data, 1)
+            entropy.extend(entropy_batch.data.view(-1).cpu().numpy())
+            print('entropy:', entropy)
+            predicted_label[start:end] = pred.cpu()
             start = end
 
         # The following threshold works as seen and unseen sets are validated separately.
