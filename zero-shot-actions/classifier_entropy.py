@@ -175,7 +175,10 @@ class CLASSIFIER:
             start = end
 
         # The following threshold works as seen and unseen sets are validated separately.
-        entropy_tensor = torch.Tensor(np.array(entropy)).cuda()
+        if self.cuda:
+            entropy_tensor = torch.Tensor(np.array(entropy)).cuda()
+        else:
+            entropy_tensor = torch.Tensor(np.array(entropy)).cpu()
         # print("entropy_np:", type(entropy_np)) np ndarray type
         seen_mask = entropy_tensor < thresh
         if not seen_classes:
