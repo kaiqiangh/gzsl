@@ -83,8 +83,8 @@ class CLASSIFIER:
                 best_acc = acc
                 best_model = copy.deepcopy(self.model)
                 #best_model = copy.deepcopy(self.model.state_dict())
-                print('best module')
-                print(best_model)
+                #print('best module')
+                #print(best_model)
         return best_acc, best_model 
         
     def fit(self):
