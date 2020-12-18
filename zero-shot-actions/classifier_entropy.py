@@ -170,14 +170,14 @@ class CLASSIFIER:
 
             _, pred = torch.max(pred.data, 1)
             entropy.extend(entropy_batch.data.view(-1).cpu().numpy())
-            print("entropy type: ", type(entropy))
+            # print("entropy type: ", type(entropy)) list type
             predicted_label[start:end] = pred.cpu()
             start = end
 
         # The following threshold works as seen and unseen sets are validated separately.
-        entropy_np = np.array(entropy)
-        print("entropy_np:", type(entropy_np))
-        seen_mask = torch.Tensor(entropy_np) < thresh
+        entropy_tensor = torch.Tensor(np.array(entropy)).cpu()
+        # print("entropy_np:", type(entropy_np)) np ndarray type
+        seen_mask = entropy_tensor < thresh
         if not seen_classes:
             seen_mask = 1 - seen_mask
         acc = self.compute_per_class_acc_gzsl(test_label, predicted_label, target_classes, seen_mask)
