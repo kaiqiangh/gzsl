@@ -151,27 +151,23 @@ class CLASSIFIER:
             if self.cuda:
                 with torch.no_grad():
                     test_Xv = Variable(test_X[start:end].cuda())
-                    print("test_Xv", test_Xv.shape) # (128, 8307) 8192+115
+                    #print("test_Xv", test_Xv.shape) # (128, 8307) 8192+115
             else:
                 with torch.no_grad():
                     test_Xv = Variable(test_X[start:end])
-                    print("test_Xv", test_Xv)
+                    #print("test_Xv", test_Xv)
             output = self.model(test_Xv) 
             entropy_batch = self.criterion(output, batch=True)
             # The following evaluation holds true as seen and unseen sets are validated separately.
             if seen_classes:
                 pred = self.seen_cls_model(test_Xv)
-                print("pred: ", pred)
+                #print("pred: ", pred)
                 #pred = self.seen_cls_model['fc.weight'] * test_Xv + self.seen_cls_model['fc.bias']
             else:
                 pred = self.unseen_cls_model(test_Xv)
                 #pred = self.seen_cls_model['fc.weight'] * test_Xv + self.unseen_cls_model['fc.bias']
-                print("pred: ", pred)
-            if self.cuda:
-                _, pred = torch.max(pred.data, 1)
-                entropy.extend(entropy_batch.data.view(-1).cuda().numpy())
-                predicted_label[start:end] = pred.cuda()
-            else:
+                #print("pred: ", pred)
+
                 _, pred = torch.max(pred.data, 1)
                 entropy.extend(entropy_batch.data.view(-1).cpu().numpy())
                 predicted_label[start:end] = pred.cpu()
