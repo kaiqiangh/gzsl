@@ -175,7 +175,7 @@ class CLASSIFIER:
             start = end
 
         # The following threshold works as seen and unseen sets are validated separately.
-        entropy_tensor = torch.Tensor(np.array(entropy)).cuda()
+        entropy_tensor = torch.Tensor(np.array(entropy)).cpu()
         # print("entropy_np:", type(entropy_np)) np ndarray type
         seen_mask = entropy_tensor < thresh
         if not seen_classes:
@@ -188,7 +188,7 @@ class CLASSIFIER:
         test_label = util.map_label(test_label,target_classes)  # required to map for both classifiers
         for i in range(target_classes.size(0)):
             idx = (test_label == i)
-            acc_per_class += torch.sum((test_label[idx]==predicted_label[idx])*mask[idx]) / torch.sum(idx)
+            acc_per_class += torch.sum((test_label[idx] == predicted_label[idx])*mask[idx]) / torch.sum(idx).cpu()
         acc_per_class /= target_classes.size(0)
         return acc_per_class
 
