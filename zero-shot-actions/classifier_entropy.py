@@ -188,7 +188,7 @@ class CLASSIFIER:
         test_label = util.map_label(test_label, target_classes)  # required to map for both classifiers
         for i in range(target_classes.size(0)):
             idx = (test_label == i)
-            acc_per_class += torch.sum((test_label[idx] == predicted_label[idx])*mask[idx]) / torch.sum(idx).cuda()
+            acc_per_class += torch.sum((test_label[idx] == predicted_label[idx])*mask[idx]).cuda() / torch.sum(idx).cuda()
         acc_per_class /= target_classes.size(0)
         return acc_per_class
 
