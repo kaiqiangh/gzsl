@@ -13,8 +13,9 @@ class CLASSIFIER:
                  test_on_seen=False, _batch_size=100, generalized=False, netDec=None, dec_size=4096, dec_hidden_size=4096):
         self.train_X =  _train_X.clone() 
         self.train_Y = _train_Y.clone() 
-        self.test_seen_feature = data_loader.test_seen_feature.clone()
-        self.test_seen_label = data_loader.test_seen_label 
+        # No need for init exp.
+        #self.test_seen_feature = data_loader.test_seen_feature.clone()
+        #self.test_seen_label = data_loader.test_seen_label
         self.test_unseen_feature = data_loader.test_unseen_feature.clone()
         self.test_unseen_label = data_loader.test_unseen_label 
         self.seenclasses = data_loader.seenclasses
@@ -33,7 +34,7 @@ class CLASSIFIER:
             self.model = LINEAR_LOGSOFTMAX_CLASSIFIER(self.input_dim, self.nclass)
             self.train_X = self.compute_dec_out(self.train_X, self.input_dim)
             self.test_unseen_feature = self.compute_dec_out(self.test_unseen_feature, self.input_dim)
-            self.test_seen_feature = self.compute_dec_out(self.test_seen_feature, self.input_dim)
+            #self.test_seen_feature = self.compute_dec_out(self.test_seen_feature, self.input_dim)
         self.model.apply(util.weights_init)
         self.criterion = nn.NLLLoss()
         self.input = torch.FloatTensor(_batch_size, self.input_dim) 
