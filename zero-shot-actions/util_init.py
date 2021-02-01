@@ -120,8 +120,8 @@ class DATA_LOADER(object):
                 self.test_unseen_feature.mul_(1 / mx)
                 self.test_unseen_label = torch.from_numpy(label[test_unseen_loc]).long()
                 #self.test_seen_feature = torch.from_numpy(_test_seen_feature).float()
-                self.test_seen_feature.mul_(1 / mx)
-                self.test_seen_label = torch.from_numpy(label[test_seen_loc]).long()
+                #self.test_seen_feature.mul_(1 / mx)
+                #self.test_seen_label = torch.from_numpy(label[test_seen_loc]).long()
                 # Scaled and transformed (0,1) attributes (bce: binary class embedding)
                 # self.bce_att = opt.bce_att
                 # select either binary class embedding or norm class embedding for attributes
@@ -152,7 +152,7 @@ class DATA_LOADER(object):
         self.unseenclasses = torch.from_numpy(np.unique(self.test_unseen_label.numpy()))
 
         self.ntrain = self.train_feature.size()[0]
-        self.ntest_seen = self.test_seen_feature.size()[0]
+        #self.ntest_seen = self.test_seen_feature.size()[0]
         self.ntest_unseen = self.test_unseen_feature.size()[0]
         self.ntrain_class = self.seenclasses.size(0)
         self.ntest_class = self.unseenclasses.size(0)
