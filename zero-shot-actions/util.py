@@ -38,13 +38,20 @@ class DATA_LOADER(object):
             label = matcontent['labels'].astype(int).squeeze() - 1
 
             # load action dataset splits and semantics
-            matcontent = sio.loadmat(opt.dataroot + "/" + opt.dataset + "/" + opt.dataset + "_semantics/" +
-                                     "split_1/" + "att_splits.mat")
+            # for all classes
+            #matcontent = sio.loadmat(opt.dataroot + "/" + opt.dataset + "/" + opt.dataset + "_semantics/" +
+             #                        "split_1/" + "att_splits.mat")
+
+            # origin code
             #matcontent = sio.loadmat(opt.dataroot + "/" + opt.dataset + "/" + opt.class_embedding + "_splits.mat")
-            trainval_loc = matcontent['trainval_loc'].squeeze() - 1
+
+            # for inistal exp. (3 classes)
+            matcontent = sio.loadmat(opt.dataroot + "/" + opt.dataset + "/" + "att_splits.mat")
+
+            #trainval_loc = matcontent['trainval_loc'].squeeze() - 1
             train_loc = matcontent['train_loc'].squeeze() - 1
-            val_unseen_loc = matcontent['val_loc'].squeeze() - 1
-            test_seen_loc = matcontent['test_seen_loc'].squeeze() - 1
+            #val_unseen_loc = matcontent['val_loc'].squeeze() - 1
+            #test_seen_loc = matcontent['test_seen_loc'].squeeze() - 1
             test_unseen_loc = matcontent['test_unseen_loc'].squeeze() - 1
 
             if opt.class_embedding == "att":
