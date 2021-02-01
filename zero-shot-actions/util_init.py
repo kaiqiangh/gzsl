@@ -54,7 +54,7 @@ class DATA_LOADER(object):
                 self.attribute /= self.attribute.pow(2).sum(1).sqrt().unsqueeze(1).expand(self.attribute.size(0),
                                                                                           self.attribute.size(1))
             elif opt.class_embedding == "wv":
-                self.attribute = torch.from_numpy(matcontent['att'].T).float()
+                self.attribute = torch.from_numpy(matcontent['att_all'].T).float()
                 self.attribute /= self.attribute.pow(2).sum(1).sqrt().unsqueeze(1).expand(self.attribute.size(0),
                                                                                           self.attribute.size(1))
             else:
