@@ -34,6 +34,7 @@ class CLASSIFIER:
             self.model = LINEAR_LOGSOFTMAX_CLASSIFIER(self.input_dim, self.nclass)
             self.train_X = self.compute_dec_out(self.train_X, self.input_dim)
             self.test_unseen_feature = self.compute_dec_out(self.test_unseen_feature, self.input_dim)
+            # No need for init exp.
             #self.test_seen_feature = self.compute_dec_out(self.test_seen_feature, self.input_dim)
         self.model.apply(util.weights_init)
         self.criterion = nn.NLLLoss()
