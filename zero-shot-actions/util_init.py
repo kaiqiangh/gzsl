@@ -41,6 +41,7 @@ class DATA_LOADER(object):
 
             # load action dataset splits and semantics
             # for inistal exp. (3 classes)
+            # case 1
             matcontent = sio.loadmat(opt.dataroot + "/" + opt.dataset + "/" + "att_split_small.mat")
 
             # trainval_loc = matcontent['trainval_loc'].squeeze() - 1
@@ -54,6 +55,8 @@ class DATA_LOADER(object):
                 self.attribute /= self.attribute.pow(2).sum(1).sqrt().unsqueeze(1).expand(self.attribute.size(0),
                                                                                           self.attribute.size(1))
             elif opt.class_embedding == "wv":
+                # att: for case 1 - 300 d
+                # att_all: for case 2 (with object) - 1200 d
                 self.attribute = torch.from_numpy(matcontent['att_all'].T).float()
                 self.attribute /= self.attribute.pow(2).sum(1).sqrt().unsqueeze(1).expand(self.attribute.size(0),
                                                                                           self.attribute.size(1))
