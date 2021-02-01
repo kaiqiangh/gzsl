@@ -115,7 +115,7 @@ class DATA_LOADER(object):
                 self.train_feature = torch.from_numpy(_train_feature).float()
                 mx = self.train_feature.max()
                 self.train_feature.mul_(1 / mx)
-                self.train_label = torch.from_numpy(label[trainval_loc]).long()
+                self.train_label = torch.from_numpy(label[train_loc]).long()
                 self.test_unseen_feature = torch.from_numpy(_test_unseen_feature).float()
                 self.test_unseen_feature.mul_(1 / mx)
                 self.test_unseen_label = torch.from_numpy(label[test_unseen_loc]).long()
@@ -135,12 +135,12 @@ class DATA_LOADER(object):
                 # self.bce_attribute_norm = self.bce_attribute/self.bce_attribute.pow(2).sum(1).sqrt().unsqueeze(1).expand(self.attribute.size(0), self.attribute.size(1))
 
             else:
-                self.train_feature = torch.from_numpy(feature[trainval_loc]).float()
-                self.train_label = torch.from_numpy(label[trainval_loc]).long()
+                self.train_feature = torch.from_numpy(feature[train_loc]).float()
+                self.train_label = torch.from_numpy(label[train_loc]).long()
                 self.test_unseen_feature = torch.from_numpy(feature[test_unseen_loc]).float()
                 self.test_unseen_label = torch.from_numpy(label[test_unseen_loc]).long()
-                self.test_seen_feature = torch.from_numpy(feature[test_seen_loc]).float()
-                self.test_seen_label = torch.from_numpy(label[test_seen_loc]).long()
+                #self.test_seen_feature = torch.from_numpy(feature[test_seen_loc]).float()
+                #self.test_seen_label = torch.from_numpy(label[test_seen_loc]).long()
         else:
             print("Enable cross validation mode")
             self.train_feature = torch.from_numpy(feature[train_loc]).float()
