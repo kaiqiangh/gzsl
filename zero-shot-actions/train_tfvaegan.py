@@ -10,7 +10,7 @@ import numpy as np
 import random
 # load files
 import model
-import util
+import util_init
 import classifier
 import classifier_entropy
 from config import opt
