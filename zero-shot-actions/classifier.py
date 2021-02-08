@@ -56,7 +56,7 @@ class CLASSIFIER:
         if generalized:
             self.acc_seen, self.acc_unseen, self.H, self.epoch, self.best_model = self.fit()
         else:
-            self.acc, self.best_acc_per_class, self.best_model, self.cm = self.fit_zsl()
+            self.acc, self.acc_per_class, self.best_model, self.cm = self.fit_zsl()
 
     def fit_zsl(self):
         best_acc = 0
