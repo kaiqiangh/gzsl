@@ -56,11 +56,12 @@ class CLASSIFIER:
         if generalized:
             self.acc_seen, self.acc_unseen, self.H, self.epoch, self.best_model = self.fit()
         else:
-            self.acc, self.best_model, self.cm = self.fit_zsl()
+            self.acc, self.best_acc_per_class, self.best_model, self.cm = self.fit_zsl()
 
     def fit_zsl(self):
         best_acc = 0
         mean_loss = 0
+        acc_per_class = []
         best_cm = []
         last_loss_epoch = 1e8
         best_model = copy.deepcopy(self.model)
@@ -81,15 +82,16 @@ class CLASSIFIER:
                 self.optimizer.step()
             self.model.eval()
                 #print('Training classifier loss= ', loss.data[0])
-            acc, cm = self.val(self.test_unseen_feature, self.test_unseen_label, self.unseenclasses)
+            acc, acc_per_class, cm = self.val(self.test_unseen_feature, self.test_unseen_label, self.unseenclasses)
             #print('acc %.4f' % (acc))
             if acc > best_acc:
                 best_acc = acc
+                best_acc_per_class = acc_per_class
                 best_model = copy.deepcopy(self.model)
                 best_cm = cm
                 #best_model = copy.deepcopy(self.model.state_dict())
                 #print(best_model)
-        return best_acc, best_model, best_cm
+        return best_acc, best_acc_per_class, best_model, best_cm
         
     def fit(self):
         best_H = 0
@@ -206,19 +208,20 @@ class CLASSIFIER:
             _, predicted_label[start:end] = torch.max(output.data, 1)
             start = end
 
-        acc = self.compute_per_class_acc(util.map_label(test_label, target_classes),
+        acc, acc_per_class = self.compute_per_class_acc(util.map_label(test_label, target_classes),
                                          predicted_label, target_classes.size(0))
 
         cm = self.compute_confusion_matrix(util.map_label(test_label, target_classes),
                                            predicted_label, target_classes.size(0))
-        return acc, cm
+        return acc, acc_per_class, cm
 
     def compute_per_class_acc(self, test_label, predicted_label, nclass):
         acc_per_class = torch.FloatTensor(nclass).fill_(0)
         for i in range(nclass):
             idx = (test_label == i)
             acc_per_class[i] = torch.sum(test_label[idx] == predicted_label[idx]) / torch.sum(idx)
-        return acc_per_class.mean() 
+            acc_mean = acc_per_class.mean()
+        return acc_mean, acc_per_class
 
     # New function: get confusion matrix
     def compute_confusion_matrix(self, test_label, predicted_label, nclass):

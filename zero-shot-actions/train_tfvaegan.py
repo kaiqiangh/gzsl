@@ -325,10 +325,12 @@ for epoch in range(0,opt.nepoch):
                                     opt.cuda, opt.classifier_lr, 0.5, 25, opt.syn_num, generalized=False, netDec=netDec, \
                                     dec_size=opt.attSize, dec_hidden_size=4096)
     acc = zsl_cls.acc
+    acc_per_class = zsl_cls.acc_per_class
     cm = zsl_cls.cm
     if best_zsl_acc < acc:
         best_zsl_acc = acc
     print('ZSL unseen accuracy=%.4f' % acc)
+    print('ZSL unseen accuracy per class\n', acc_per_class)
     print('ZSL confusion matrix\n', cm)
     # reset modules to training mode
     netG.train()
