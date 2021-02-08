@@ -5,6 +5,7 @@ parser.add_argument('--dataset', default='FLO', help='FLO')
 parser.add_argument('--dataroot', default='data', help='path to dataset')
 parser.add_argument('--action_embedding', default='i3d') # action visual embedding
 parser.add_argument('--class_embedding', default='att') # att or wv
+parser.add_argument('--object', action='store_true', default=False, help='add object info.')
 parser.add_argument('--image_embedding_path', default='')
 parser.add_argument('--manual_att', action='store_true', default=False, help='Use manual attributes')
 parser.add_argument('--syn_num', type=int, default=100, help='number features to generate per class')
