@@ -62,7 +62,8 @@ class DATA_LOADER(object):
                     self.attribute = torch.from_numpy(matcontent['att_all'].T).float()
                     # 1 object, 2 objects and 3 objects
                     print("append 1 object.")
-                    self.attribute = self.attribute[101:600]
+                    self.attribute = self.attribute[:, :600]
+                    print(self.attribute.shape)
                     self.attribute /= self.attribute.pow(2).sum(1).sqrt().unsqueeze(1).expand(self.attribute.size(0),
                                                                                               self.attribute.size(1))
                 else:
