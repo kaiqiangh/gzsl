@@ -7,6 +7,7 @@ import util
 import sys
 import copy
 import pdb
+from sklearn.metrics import confusion_matrix
 
 class CLASSIFIER:
     def __init__(self, _train_X, _train_Y, data_loader, _nclass, _cuda, _lr=0.001, _beta1=0.5, _nepoch=20,
@@ -34,7 +35,7 @@ class CLASSIFIER:
             self.model = LINEAR_LOGSOFTMAX_CLASSIFIER(self.input_dim, self.nclass)
             self.train_X = self.compute_dec_out(self.train_X, self.input_dim)
             self.test_unseen_feature = self.compute_dec_out(self.test_unseen_feature, self.input_dim)
-            # No need for init exp.
+            # No need for init exp. (zsl setting)
             #self.test_seen_feature = self.compute_dec_out(self.test_seen_feature, self.input_dim)
         self.model.apply(util.weights_init)
         self.criterion = nn.NLLLoss()
@@ -55,11 +56,12 @@ class CLASSIFIER:
         if generalized:
             self.acc_seen, self.acc_unseen, self.H, self.epoch, self.best_model = self.fit()
         else:
-            self.acc, self.best_model = self.fit_zsl()
+            self.acc, self.best_model, self.cm = self.fit_zsl()
 
     def fit_zsl(self):
         best_acc = 0
         mean_loss = 0
+        best_cm = []
         last_loss_epoch = 1e8
         best_model = copy.deepcopy(self.model)
         #best_model = copy.deepcopy(self.model.state_dict())
@@ -79,15 +81,15 @@ class CLASSIFIER:
                 self.optimizer.step()
             self.model.eval()
                 #print('Training classifier loss= ', loss.data[0])
-            acc = self.val(self.test_unseen_feature, self.test_unseen_label, self.unseenclasses)
+            acc, cm = self.val(self.test_unseen_feature, self.test_unseen_label, self.unseenclasses)
             #print('acc %.4f' % (acc))
             if acc > best_acc:
                 best_acc = acc
                 best_model = copy.deepcopy(self.model)
+                best_cm = cm
                 #best_model = copy.deepcopy(self.model.state_dict())
-                #print('best module')
                 #print(best_model)
-        return best_acc, best_model 
+        return best_acc, best_model, best_cm
         
     def fit(self):
         best_H = 0
@@ -206,7 +208,10 @@ class CLASSIFIER:
 
         acc = self.compute_per_class_acc(util.map_label(test_label, target_classes),
                                          predicted_label, target_classes.size(0))
-        return acc
+
+        cm = self.compute_confusion_matrix(util.map_label(test_label, target_classes),
+                                           predicted_label, target_classes.size(0))
+        return acc, cm
 
     def compute_per_class_acc(self, test_label, predicted_label, nclass):
         acc_per_class = torch.FloatTensor(nclass).fill_(0)
@@ -214,6 +219,10 @@ class CLASSIFIER:
             idx = (test_label == i)
             acc_per_class[i] = torch.sum(test_label[idx] == predicted_label[idx]) / torch.sum(idx)
         return acc_per_class.mean() 
+
+    # New function: get confusion matrix
+    def compute_confusion_matrix(self, test_label, predicted_label, nclass):
+        return confusion_matrix(test_label, predicted_label)
 
     def compute_dec_out(self, test_X, new_size):
         start = 0

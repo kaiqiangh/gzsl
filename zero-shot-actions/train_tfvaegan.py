@@ -161,6 +161,7 @@ def calc_gradient_penalty(netD, real_data, fake_data, input_att):
 
 
 best_zsl_acc = 0
+best_cm = []
 if opt.gzsl_od:
     best_gzsl_acc = 0
 
@@ -324,6 +325,7 @@ for epoch in range(0,opt.nepoch):
                                     opt.cuda, opt.classifier_lr, 0.5, 25, opt.syn_num, generalized=False, netDec=netDec, \
                                     dec_size=opt.attSize, dec_hidden_size=4096)
     acc = zsl_cls.acc
+    cm = zsl_cls.cm
     if best_zsl_acc < acc:
         best_zsl_acc = acc
     print('ZSL: unseen accuracy=%.4f' % acc)

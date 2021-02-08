@@ -1,4 +1,5 @@
-# author: akshitac8
+# This file is for Init. Experiment （3 seen + 3 unseen）
+
 import numpy as np
 import scipy.io as sio
 import torch
@@ -56,7 +57,11 @@ class DATA_LOADER(object):
                                                                                           self.attribute.size(1))
             elif opt.class_embedding == "wv":
                 # att: for case 1 - 300 d
+                #print("without object semantics:")
+                #self.attribute = torch.from_numpy(matcontent['att'].T).float()
+
                 # att_all: for case 2 (with object) - 1200 d
+                print("with object semantics:")
                 self.attribute = torch.from_numpy(matcontent['att_all'].T).float()
                 self.attribute /= self.attribute.pow(2).sum(1).sqrt().unsqueeze(1).expand(self.attribute.size(0),
                                                                                           self.attribute.size(1))

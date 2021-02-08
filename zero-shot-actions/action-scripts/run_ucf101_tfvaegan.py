@@ -20,9 +20,12 @@ os.system('''python /content/gzsl/zero-shot-actions/train_tfvaegan.py \
 # --dataset ucf101_i3d/split_{split}
 # --image_embedding_path ucf101_i3d
 
+
 # Tryout: Inital experiment (ZSL setting)
 # 3 seen classes + 3 unseen classes
-# i3d(8192d) + w2v(300d)
+# case 1: i3d(8192d) + w2v(300d)
+# case 2: i3d(8192d) + w2v(1200d)
+# Need to check: zsl/gzsl, nz/attSize, nclass_all, nepoch
 os.system('''python /content/gzsl/zero-shot-actions/train_tfvaegan.py \
 --encoded_noise --workers 8 --nclass_all 3 \
 --dataset ucf101 --dataroot /content/drive/MyDrive/colab_data/action_datasets_small \
