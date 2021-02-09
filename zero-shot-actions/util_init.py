@@ -57,18 +57,41 @@ class DATA_LOADER(object):
                                                                                           self.attribute.size(1))
             elif opt.class_embedding == "wv":
                 if opt.object:
-                    # att_all: for case 2 (with object) - 300 + 900d
+                    # att_all: 300 + 900d
                     print("with object semantics:")
+                    # print("append 3 objects")
                     self.attribute = torch.from_numpy(matcontent['att_all'].T).float()
                     # 1 object, 2 objects and 3 objects
-                    # self.attribute = self.attribute[:, :900]
+                    ################################################################################################
+                    # 1 object
+                    # print("append 1 object (1st obj.)")
+                    # self.attribute = self.attribute[:, :600]
 
-                    print("append 1 object (2rd obj.)")
+                    #print("append 1 object (2nd obj.)")
                     # a[:,2:6] - including index 2 and excluding index 6
-                    self.attribute = torch.hstack((self.attribute[:, :300], self.attribute[:, 600:900]))
+                    #self.attribute = torch.hstack((self.attribute[:, :300], self.attribute[:, 600:900]))
 
                     #print("append 1 object (3rd obj.)")
                     #self.attribute = torch.hstack((self.attribute[:, :300], self.attribute[:, 900:]))
+
+                    ################################################################################################
+
+                    # 2 objects
+                    # 1st + 2nd
+                    # print("append 2 objects (1st + 2nd)")
+                    #self.attribute = self.attribute[:, :900]
+                    # 1st + 3rd
+                    print("append 2 objects (1st + 3rd)")
+                    self.attribute = torch.hstack((self.attribute[:, :600], self.attribute[:, 900:]))
+                    # 2nd + 3rd
+                    #print("append 2 objects (2nd + 3rd)")
+                    #self.attribute = torch.hstack((self.attribute[:, :300], self.attribute[:, 600:]))
+
+
+                    ################################################################################################
+                    # 3 objects
+                    # no need to modify
+                    #self.attribute = torch.from_numpy(matcontent['att_all'].T).float()
 
                     print(self.attribute.shape)
                     self.attribute /= self.attribute.pow(2).sum(1).sqrt().unsqueeze(1).expand(self.attribute.size(0),
