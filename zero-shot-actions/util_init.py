@@ -61,9 +61,15 @@ class DATA_LOADER(object):
                     print("with object semantics:")
                     self.attribute = torch.from_numpy(matcontent['att_all'].T).float()
                     # 1 object, 2 objects and 3 objects
-                    print("append 1 object (3rd obj.)")
-                    #self.attribute = self.attribute[:, :900]
-                    self.attribute = torch.hstack((self.attribute[:, :300], self.attribute[:, 900:]))
+                    # self.attribute = self.attribute[:, :900]
+
+                    print("append 1 object (2rd obj.)")
+                    # a[:,2:6] - including index 2 and excluding index 6
+                    self.attribute = torch.hstack((self.attribute[:, :300], self.attribute[:, 600:900]))
+
+                    #print("append 1 object (3rd obj.)")
+                    #self.attribute = torch.hstack((self.attribute[:, :300], self.attribute[:, 900:]))
+
                     print(self.attribute.shape)
                     self.attribute /= self.attribute.pow(2).sum(1).sqrt().unsqueeze(1).expand(self.attribute.size(0),
                                                                                               self.attribute.size(1))
