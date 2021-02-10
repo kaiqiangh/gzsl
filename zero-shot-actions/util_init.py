@@ -59,7 +59,7 @@ class DATA_LOADER(object):
                 if opt.object:
                     # att_all: 300 + 900d
                     print("with object semantics:")
-                    # print("append 3 objects") - 1200d
+                    # print("append 3 objects - 1200d")
                     self.attribute = torch.from_numpy(matcontent['att_all'].T).float()
                     # Different cases:
                     ################################################################################################
