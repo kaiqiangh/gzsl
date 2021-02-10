@@ -43,12 +43,12 @@ class DATA_LOADER(object):
             # load action dataset splits and semantics
             # for inistal exp. (20 classes)
             #matcontent = sio.loadmat(opt.dataroot + "/" + opt.dataset + "/" + "att_split_6classes.mat")
-            matcontent = sio.loadmat(opt.dataroot + "/" + opt.dataset + "/" + "att_split_20classes.mat")
+            matcontent = sio.loadmat(opt.dataroot + "/" + opt.dataset + "/" + "att_split_10classes.mat")
 
             # trainval_loc = matcontent['trainval_loc'].squeeze() - 1
             train_loc = matcontent['train_loc'].squeeze() - 1
             # val_unseen_loc = matcontent['val_loc'].squeeze() - 1
-            # test_seen_loc = matcontent['test_seen_loc'].squeeze() - 1
+            test_seen_loc = matcontent['test_seen_loc'].squeeze() - 1
             test_unseen_loc = matcontent['test_unseen_loc'].squeeze() - 1
 
             if opt.class_embedding == "att":
@@ -61,43 +61,48 @@ class DATA_LOADER(object):
                     print("with object semantics:")
                     # print("append 3 objects")
                     self.attribute = torch.from_numpy(matcontent['att_all'].T).float()
-                    # 1 object, 2 objects and 3 objects
+                    # Different cases:
                     ################################################################################################
-                    # 1 object
-                    # print("append 1 object (1st obj.)")
-                    # self.attribute = self.attribute[:, :600]
+                    # Case 1: Replace action wv with object wv (300d)
+                    print("replace action wv with 1st object")
+                    self.attribute = self.attribute[:, 300:600]
 
-                    #print("append 1 object (2nd obj.)")
+                    #print("replace action wv with 1st object")
+                    #self.attribute = self.attribute[:, 600:900]
+
+                    #print("replace action wv with 1st object")
+                    #self.attribute = self.attribute[:, 900:]
+
+                    ################################################################################################
+
+                    # Case 2: Append 1 object (600d)
+                    #print("append 1st obj.")
+                    #self.attribute = self.attribute[:, :600]
+
+                    #print("append 2nd obj.")
                     # a[:,2:6] - including index 2 and excluding index 6
                     #self.attribute = torch.hstack((self.attribute[:, :300], self.attribute[:, 600:900]))
 
-                    #print("append 1 object (3rd obj.)")
+                    #print("append 3rd obj.")
                     #self.attribute = torch.hstack((self.attribute[:, :300], self.attribute[:, 900:]))
 
                     ################################################################################################
-
                     # 2 objects
-                    # 1st + 2nd
                     # print("append 2 objects (1st + 2nd)")
                     #self.attribute = self.attribute[:, :900]
                     # 1st + 3rd
                     #print("append 2 objects (1st + 3rd)")
                     #self.attribute = torch.hstack((self.attribute[:, :600], self.attribute[:, 900:]))
                     # 2nd + 3rd
-                    print("append 2 objects (2nd + 3rd)")
-                    self.attribute = torch.hstack((self.attribute[:, :300], self.attribute[:, 600:]))
-
+                    #print("append 2 objects (2nd + 3rd)")
+                    #self.attribute = torch.hstack((self.attribute[:, :300], self.attribute[:, 600:]))
 
                     ################################################################################################
-                    # 3 objects
-                    # no need to modify
-                    #self.attribute = torch.from_numpy(matcontent['att_all'].T).float()
 
                     print(self.attribute.shape)
                     self.attribute /= self.attribute.pow(2).sum(1).sqrt().unsqueeze(1).expand(self.attribute.size(0),
                                                                                               self.attribute.size(1))
                 else:
-                    # att: for case 1 - 300 d
                     print("without object semantics:")
                     self.attribute = torch.from_numpy(matcontent['att'].T).float()
                     self.attribute /= self.attribute.pow(2).sum(1).sqrt().unsqueeze(1).expand(self.attribute.size(0),
@@ -155,7 +160,7 @@ class DATA_LOADER(object):
                     # scaler_att = preprocessing.MinMaxScaler()
 
                 _train_feature = scaler.fit_transform(feature[train_loc])
-                #_test_seen_feature = scaler.transform(feature[test_seen_loc])
+                _test_seen_feature = scaler.transform(feature[test_seen_loc])
                 _test_unseen_feature = scaler.transform(feature[test_unseen_loc])
                 self.train_feature = torch.from_numpy(_train_feature).float()
                 mx = self.train_feature.max()
@@ -164,9 +169,9 @@ class DATA_LOADER(object):
                 self.test_unseen_feature = torch.from_numpy(_test_unseen_feature).float()
                 self.test_unseen_feature.mul_(1 / mx)
                 self.test_unseen_label = torch.from_numpy(label[test_unseen_loc]).long()
-                #self.test_seen_feature = torch.from_numpy(_test_seen_feature).float()
-                #self.test_seen_feature.mul_(1 / mx)
-                #self.test_seen_label = torch.from_numpy(label[test_seen_loc]).long()
+                self.test_seen_feature = torch.from_numpy(_test_seen_feature).float()
+                self.test_seen_feature.mul_(1 / mx)
+                self.test_seen_label = torch.from_numpy(label[test_seen_loc]).long()
                 # Scaled and transformed (0,1) attributes (bce: binary class embedding)
                 # self.bce_att = opt.bce_att
                 # select either binary class embedding or norm class embedding for attributes
@@ -184,8 +189,8 @@ class DATA_LOADER(object):
                 self.train_label = torch.from_numpy(label[train_loc]).long()
                 self.test_unseen_feature = torch.from_numpy(feature[test_unseen_loc]).float()
                 self.test_unseen_label = torch.from_numpy(label[test_unseen_loc]).long()
-                #self.test_seen_feature = torch.from_numpy(feature[test_seen_loc]).float()
-                #self.test_seen_label = torch.from_numpy(label[test_seen_loc]).long()
+                self.test_seen_feature = torch.from_numpy(feature[test_seen_loc]).float()
+                self.test_seen_label = torch.from_numpy(label[test_seen_loc]).long()
         else:
             print("Enable cross validation mode")
             self.train_feature = torch.from_numpy(feature[train_loc]).float()
@@ -197,7 +202,7 @@ class DATA_LOADER(object):
         self.unseenclasses = torch.from_numpy(np.unique(self.test_unseen_label.numpy()))
 
         self.ntrain = self.train_feature.size()[0]
-        #self.ntest_seen = self.test_seen_feature.size()[0]
+        self.ntest_seen = self.test_seen_feature.size()[0]
         self.ntest_unseen = self.test_unseen_feature.size()[0]
         self.ntrain_class = self.seenclasses.size(0)
         self.ntest_class = self.unseenclasses.size(0)
