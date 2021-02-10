@@ -67,10 +67,10 @@ class DATA_LOADER(object):
                     #print("replace action wv with 1st object")
                     #self.attribute = self.attribute[:, 300:600]
 
-                    print("replace action wv with 1st object")
+                    print("replace action wv with 2nd object")
                     self.attribute = self.attribute[:, 600:900]
 
-                    #print("replace action wv with 1st object")
+                    #print("replace action wv with 3rd object")
                     #self.attribute = self.attribute[:, 900:]
 
                     ################################################################################################
