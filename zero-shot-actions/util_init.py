@@ -59,7 +59,7 @@ class DATA_LOADER(object):
                 if opt.object:
                     # att_all: 300 + 900d
                     print("with object semantics:")
-                    # print("append 3 objects")
+                    # print("append 3 objects") - 1200d
                     self.attribute = torch.from_numpy(matcontent['att_all'].T).float()
                     # Different cases:
                     ################################################################################################
@@ -87,7 +87,8 @@ class DATA_LOADER(object):
                     #self.attribute = torch.hstack((self.attribute[:, :300], self.attribute[:, 900:]))
 
                     ################################################################################################
-                    # 2 objects
+
+                    # Case 3: Append 2 objects (900d)
                     # print("append 2 objects (1st + 2nd)")
                     #self.attribute = self.attribute[:, :900]
                     # 1st + 3rd
