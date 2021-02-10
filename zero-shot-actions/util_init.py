@@ -83,14 +83,15 @@ class DATA_LOADER(object):
                     # a[:,2:6] - including index 2 and excluding index 6
                     #self.attribute = torch.hstack((self.attribute[:, :300], self.attribute[:, 600:900]))
 
-                    print("append 3rd obj.")
-                    self.attribute = torch.hstack((self.attribute[:, :300], self.attribute[:, 900:]))
+                    #print("append 3rd obj.")
+                    #self.attribute = torch.hstack((self.attribute[:, :300], self.attribute[:, 900:]))
 
                     ################################################################################################
 
                     # Case 3: Append 2 objects (900d)
-                    # print("append 2 objects (1st + 2nd)")
-                    #self.attribute = self.attribute[:, :900]
+                    # 1st + 2nd
+                    print("append 2 objects (1st + 2nd)")
+                    self.attribute = self.attribute[:, :900]
                     # 1st + 3rd
                     #print("append 2 objects (1st + 3rd)")
                     #self.attribute = torch.hstack((self.attribute[:, :600], self.attribute[:, 900:]))
