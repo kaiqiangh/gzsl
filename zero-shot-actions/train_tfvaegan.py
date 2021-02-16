@@ -307,6 +307,7 @@ for epoch in range(0,opt.nepoch):
     if opt.gzsl_od:
         # OD based GZSL
         seen_class = data.seenclasses.size(0)
+        print('seen class size: %d', seen_class)
         clsu = classifier.CLASSIFIER(syn_feature, util_init.map_label(syn_label, data.unseenclasses), data, data.unseenclasses.size(0), \
                                     opt.cuda, _nepoch=25, _batch_size=opt.syn_num, netDec=netDec, dec_size=opt.attSize, dec_hidden_size=4096)
         clss = classifier.CLASSIFIER(data.train_feature, util_init.map_label(data.train_label,data.seenclasses), data, seen_class, opt.cuda, \

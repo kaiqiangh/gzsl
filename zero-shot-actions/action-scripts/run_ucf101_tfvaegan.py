@@ -35,13 +35,13 @@ os.system('''python /content/gzsl/zero-shot-actions/train_tfvaegan.py \
 """
 
 # Tryout: Inital experiment (ZSL setting)
-# 10 seen classes + 10 unseen classes
+# 5 seen classes + 5 unseen classes
 # case 1: i3d(8192d) + w2v(300d)
 # case 2: i3d(8192d) + w2v(1200d)
 # Need to check: zsl/gzsl, nz/attSize, nclass_all, nepoch
 # --object
 os.system('''python /content/gzsl/zero-shot-actions/train_tfvaegan.py \
---encoded_noise --workers 8 --nclass_all 10 \
+--encoded_noise --gzsl_od --workers 8 --nclass_all 10 \
 --dataset ucf101 --dataroot /content/drive/MyDrive/colab_data/action_datasets_small \
 --syn_num 600 --preprocessing --cuda --gammaD 10 --gammaG 10 \
 --action_embedding i3d --class_embedding wv \
