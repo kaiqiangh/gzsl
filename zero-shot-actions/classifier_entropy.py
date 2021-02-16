@@ -4,7 +4,7 @@ from torch.autograd import Variable
 import torch.optim as optim
 import torch.nn.functional as F
 import numpy as np
-import util_init
+import util
 
 class CLASSIFIER:
     def __init__(self, _train_X, _train_Y, data_loader, _nclass, syn_feature, syn_label, _cuda, seen_classifier,
@@ -40,7 +40,7 @@ class CLASSIFIER:
 
         self.seen_cls_model = seen_classifier.best_model
         self.unseen_cls_model = unseen_classifier.best_model
-        self.model.apply(util_init.weights_init)
+        self.model.apply(util.weights_init)
         self.criterion = HLoss()
         self.nll_criterion = nn.NLLLoss()
         self.logsoft = nn.LogSoftmax(dim=1)
@@ -188,7 +188,7 @@ class CLASSIFIER:
 
     def compute_per_class_acc_gzsl(self, test_label, predicted_label, target_classes, mask):
         acc_per_class = 0
-        test_label = util_init.map_label(test_label, target_classes)  # required to map for both classifiers
+        test_label = util.map_label(test_label, target_classes)  # required to map for both classifiers
         for i in range(target_classes.size(0)):
             idx = (test_label == i)
             # NEED TO FIX: cpu and cuda setting

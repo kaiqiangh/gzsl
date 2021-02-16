@@ -41,7 +41,7 @@ os.system('''python /content/gzsl/zero-shot-actions/train_tfvaegan.py \
 # Need to check: zsl/gzsl, nz/attSize, nclass_all, nepoch
 # --object
 os.system('''python /content/gzsl/zero-shot-actions/train_tfvaegan.py \
---encoded_noise --gzsl_od --workers 8 --nclass_all 10 \
+--encoded_noise --workers 8 --nclass_all 10 \
 --dataset ucf101 --dataroot /content/drive/MyDrive/colab_data/action_datasets_small \
 --syn_num 600 --preprocessing --cuda --gammaD 10 --gammaG 10 \
 --action_embedding i3d --class_embedding wv \
