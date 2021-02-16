@@ -1,10 +1,8 @@
-# This file is for Init. Experiment （3 seen + 3 unseen）
-
+# This file is for Init. Experiment （5 seen + 5 unseen）
 import numpy as np
 import scipy.io as sio
 import torch
 from sklearn import preprocessing
-
 
 def weights_init(m):
     classname = m.__class__.__name__
