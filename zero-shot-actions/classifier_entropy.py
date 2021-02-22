@@ -186,7 +186,7 @@ class CLASSIFIER:
         # print("entropy_np:", type(entropy_np)) np ndarray type
         seen_mask = entropy_tensor < thresh
         if not seen_classes:
-            seen_mask = 1 - seen_mask
+            seen_mask = ~seen_mask
         acc = self.compute_per_class_acc_gzsl(test_label, predicted_label, target_classes, seen_mask)
         return acc
 
@@ -196,7 +196,7 @@ class CLASSIFIER:
         for i in range(target_classes.size(0)):
             idx = (test_label == i)
             # NEED TO FIX: cpu and cuda setting
-            acc_per_class += torch.sum((test_label[idx] == predicted_label[idx])*mask[idx]) / torch.sum(idx)
+            acc_per_class += torch.sum((test_label[idx] == predicted_label[idx])*mask[idx].cpu()) / torch.sum(idx)
         acc_per_class /= target_classes.size(0)
         return acc_per_class
 
