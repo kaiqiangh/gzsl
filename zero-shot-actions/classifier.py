@@ -15,8 +15,8 @@ class CLASSIFIER:
         self.train_X =  _train_X.clone() 
         self.train_Y = _train_Y.clone() 
         # No need for init exp.
-        #self.test_seen_feature = data_loader.test_seen_feature.clone()
-        #self.test_seen_label = data_loader.test_seen_label
+        self.test_seen_feature = data_loader.test_seen_feature.clone()
+        self.test_seen_label = data_loader.test_seen_label
         self.test_unseen_feature = data_loader.test_unseen_feature.clone()
         self.test_unseen_label = data_loader.test_unseen_label 
         self.seenclasses = data_loader.seenclasses
