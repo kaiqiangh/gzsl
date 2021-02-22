@@ -188,7 +188,7 @@ class CLASSIFIER:
         acc_per_class = 0
         for i in target_classes:
             idx = (test_label == i)
-            acc_per_class += torch.sum(test_label[idx]==predicted_label[idx]) / torch.sum(idx)
+            acc_per_class += torch.sum(test_label[idx] == predicted_label[idx]) / torch.sum(idx)
         acc_per_class /= target_classes.size(0)
         return acc_per_class 
 

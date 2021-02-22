@@ -169,9 +169,14 @@ class CLASSIFIER:
                 #print("pred: ", pred)
 
             _, pred = torch.max(pred.data, 1)
-            entropy.extend(entropy_batch.data.view(-1).cpu().numpy())
+
+            #entropy.extend(entropy_batch.data.view(-1).cpu().numpy())
+            entropy.extend(entropy_batch.data.view(-1).numpy())
+
             # print("entropy type: ", type(entropy)) list type
-            predicted_label[start:end] = pred.cpu()
+            #predicted_label[start:end] = pred.cpu()
+            predicted_label[start:end] = pred
+
             start = end
 
         # The following threshold works as seen and unseen sets are validated separately.
@@ -192,7 +197,7 @@ class CLASSIFIER:
         for i in range(target_classes.size(0)):
             idx = (test_label == i)
             # NEED TO FIX: cpu and cuda setting
-            acc_per_class += torch.sum((test_label[idx] == predicted_label[idx])*mask[idx]).cpu() / torch.sum(idx).cpu()
+            acc_per_class += torch.sum((test_label[idx] == predicted_label[idx])*mask[idx]) / torch.sum(idx)
         acc_per_class /= target_classes.size(0)
         return acc_per_class
 
@@ -211,7 +216,8 @@ class CLASSIFIER:
 
             feat1 = self.netDec(inputX)
             feat2 = self.netDec.getLayersOutDet()
-            new_test_X[start:end] = torch.cat([inputX,feat1,feat2],dim=1).data.cpu()
+            #new_test_X[start:end] = torch.cat([inputX,feat1,feat2],dim=1).data.cpu()
+            new_test_X[start:end] = torch.cat([inputX, feat1, feat2], dim=1).data
             start = end
         return new_test_X
 
