@@ -172,16 +172,18 @@ class CLASSIFIER:
             entropy.extend(entropy_batch.data.view(-1).cpu().numpy())
 
             # print("entropy type: ", type(entropy)) list type
-            #predicted_label[start:end] = pred.cpu()
-            predicted_label[start:end] = pred
+            predicted_label[start:end] = pred.cpu()
+            #predicted_label[start:end] = pred
 
             start = end
 
         # The following threshold works as seen and unseen sets are validated separately.
-        if self.cuda:
-            entropy_tensor = torch.Tensor(np.array(entropy)).cuda()
-        else:
-            entropy_tensor = torch.Tensor(np.array(entropy)).cpu()
+        #if self.cuda:
+         #   entropy_tensor = torch.Tensor(np.array(entropy)).cuda()
+        #else:
+         #   entropy_tensor = torch.Tensor(np.array(entropy)).cpu()
+        entropy_tensor = torch.Tensor(np.array(entropy)).cpu()
+
         # print("entropy_np:", type(entropy_np)) np ndarray type
         seen_mask = entropy_tensor < thresh
         if not seen_classes:
@@ -214,8 +216,8 @@ class CLASSIFIER:
 
             feat1 = self.netDec(inputX)
             feat2 = self.netDec.getLayersOutDet()
-            #new_test_X[start:end] = torch.cat([inputX,feat1,feat2],dim=1).data.cpu()
-            new_test_X[start:end] = torch.cat([inputX, feat1, feat2], dim=1).data
+            new_test_X[start:end] = torch.cat([inputX,feat1,feat2],dim=1).data.cpu()
+            #new_test_X[start:end] = torch.cat([inputX, feat1, feat2], dim=1).data
             start = end
         return new_test_X
 
