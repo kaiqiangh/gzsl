@@ -11,8 +11,8 @@ from sklearn.metrics import confusion_matrix
 
 class CLASSIFIER:
     def __init__(self, _train_X, _train_Y, data_loader, _nclass, _cuda, _lr=0.001, _beta1=0.5, _nepoch=20,
-                 test_on_seen=False, _batch_size=100, generalized=False, netDec=None, dec_size=4096, dec_hidden_size=4096):
-        self.train_X =  _train_X.clone() 
+                _batch_size=100, generalized=False, netDec=None, dec_size=4096, dec_hidden_size=4096):
+        self.train_X = _train_X.clone()
         self.train_Y = _train_Y.clone() 
         # No need for init exp.
         self.test_seen_feature = data_loader.test_seen_feature.clone()
@@ -44,7 +44,7 @@ class CLASSIFIER:
         self.lr = _lr
         self.beta1 = _beta1
         self.optimizer = optim.Adam(self.model.parameters(), lr=_lr, betas=(_beta1, 0.999))
-        self.test_on_seen = test_on_seen
+        #self.test_on_seen = test_on_seen
         if self.cuda:
             self.model.cuda()
             self.criterion.cuda()
@@ -97,6 +97,7 @@ class CLASSIFIER:
         best_H = 0
         best_seen = 0
         best_unseen = 0
+        best_cm = []
         out = []
         #best_model = copy.deepcopy(self.model.state_dict())
         best_model = copy.deepcopy(self.model)
