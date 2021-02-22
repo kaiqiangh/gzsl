@@ -169,9 +169,7 @@ class CLASSIFIER:
                 #print("pred: ", pred)
 
             _, pred = torch.max(pred.data, 1)
-
-            #entropy.extend(entropy_batch.data.view(-1).cpu().numpy())
-            entropy.extend(entropy_batch.data.view(-1).numpy())
+            entropy.extend(entropy_batch.data.view(-1).cpu().numpy())
 
             # print("entropy type: ", type(entropy)) list type
             #predicted_label[start:end] = pred.cpu()
