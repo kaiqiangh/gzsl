@@ -107,6 +107,7 @@ class DATA_LOADER(object):
                     self.attribute = torch.from_numpy(matcontent['att'].T).float()
                     self.attribute /= self.attribute.pow(2).sum(1).sqrt().unsqueeze(1).expand(self.attribute.size(0),
                                                                                               self.attribute.size(1))
+                    print(self.attribute.shape)
             else:
                 print("Wrong semantics. In UCF101 splits file, att means word2vec and origin_att means attributes.")
 

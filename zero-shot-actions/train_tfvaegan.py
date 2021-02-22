@@ -310,12 +310,12 @@ for epoch in range(0,opt.nepoch):
         print('seen class size: ', seen_class)
         clsu = classifier.CLASSIFIER(syn_feature, util_init.map_label(syn_label, data.unseenclasses),
                                      data, data.unseenclasses.size(0), opt.cuda,
-                                     _nepoch=30, _batch_size=opt.syn_num,
+                                     _nepoch=30, _batch_size=opt.syn_num, generalized=True,
                                      netDec=netDec, dec_size=opt.attSize, dec_hidden_size=4096)
 
         clss = classifier.CLASSIFIER(data.train_feature, util_init.map_label(data.train_label, data.seenclasses),
                                      data, data.seenclasses.size(0), opt.cuda,
-                                     _nepoch=30, _batch_size=opt.syn_num,
+                                     _nepoch=30, _batch_size=opt.syn_num, generalized=True,
                                      netDec=netDec, dec_size=opt.attSize, dec_hidden_size=4096)
 
         clsg = classifier_entropy.CLASSIFIER(data.train_feature, util_init.map_label(data.train_label, data.seenclasses),
