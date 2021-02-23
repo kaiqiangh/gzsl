@@ -102,6 +102,17 @@ class DATA_LOADER(object):
                     print(self.attribute.shape)
                     self.attribute /= self.attribute.pow(2).sum(1).sqrt().unsqueeze(1).expand(self.attribute.size(0),
                                                                                               self.attribute.size(1))
+                elif opt.avg_wv:
+                    self.attribute = torch.from_numpy(matcontent['att_all'].T).float()
+                    self.action_wv = torch.from_numpy(matcontent['att'].T).float()
+                    self.object1_wv = self.attribute[:, :600]
+                    self.object2_wv = self.attribute[:, 600:900]
+                    self.object3_wv = self.attribute[:, 900:]
+
+                    # Case 1: avg action and 1st object
+                    print("Averaging action and 1st object semantics")
+                    self.attribute = torch.add(self.action_wv, self.object1_wv) / 2
+
                 else:
                     print("without object semantics:")
                     self.attribute = torch.from_numpy(matcontent['att'].T).float()

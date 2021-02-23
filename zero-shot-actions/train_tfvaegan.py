@@ -327,6 +327,7 @@ for epoch in range(0,opt.nepoch):
             best_acc_seen, best_acc_unseen, best_gzsl_acc = clsg.acc_seen, clsg.acc_unseen, clsg.H
         print('GZSL-OD: Acc seen=%.4f, Acc unseen=%.4f, h=%.4f' % (clsg.acc_seen, clsg.acc_unseen, clsg.H))
 
+
     # Zero-shot learning
     # Train ZSL classifier
     zsl_cls = classifier.CLASSIFIER(syn_feature, util_init.map_label(syn_label, data.unseenclasses),

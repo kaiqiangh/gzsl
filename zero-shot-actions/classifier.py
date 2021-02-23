@@ -3,7 +3,7 @@ import torch.nn as nn
 from torch.autograd import Variable
 import torch.optim as optim
 import numpy as np
-import util
+import util_init
 import sys
 import copy
 import pdb
@@ -37,7 +37,7 @@ class CLASSIFIER:
             self.test_unseen_feature = self.compute_dec_out(self.test_unseen_feature, self.input_dim)
             # No need for init exp. (zsl setting)
             self.test_seen_feature = self.compute_dec_out(self.test_seen_feature, self.input_dim)
-        self.model.apply(util.weights_init)
+        self.model.apply(util_init.weights_init)
         self.criterion = nn.NLLLoss()
         self.input = torch.FloatTensor(_batch_size, self.input_dim) 
         self.label = torch.LongTensor(_batch_size) 
@@ -209,10 +209,10 @@ class CLASSIFIER:
             _, predicted_label[start:end] = torch.max(output.data, 1)
             start = end
 
-        acc, acc_per_class = self.compute_per_class_acc(util.map_label(test_label, target_classes),
+        acc, acc_per_class = self.compute_per_class_acc(util_init.map_label(test_label, target_classes),
                                          predicted_label, target_classes.size(0))
 
-        cm = self.compute_confusion_matrix(util.map_label(test_label, target_classes),
+        cm = self.compute_confusion_matrix(util_init.map_label(test_label, target_classes),
                                            predicted_label, target_classes.size(0))
         return acc, acc_per_class, cm
 
