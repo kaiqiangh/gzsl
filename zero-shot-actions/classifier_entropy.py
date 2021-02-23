@@ -5,6 +5,8 @@ import torch.optim as optim
 import torch.nn.functional as F
 import numpy as np
 import util_init
+from sklearn.metrics import confusion_matrix
+
 
 class CLASSIFIER:
     def __init__(self, _train_X, _train_Y, data_loader, _nclass, syn_feature, syn_label, _cuda, seen_classifier,
@@ -63,12 +65,13 @@ class CLASSIFIER:
         self.index_in_epoch_syn = 0
         self.ntrain = self.train_X.size()[0]
 
-        self.acc_seen, self.acc_unseen, self.H = self.fit()
+        self.acc_seen, self.acc_unseen, self.H, self.cm_seen, self.cm_unseen = self.fit()
     
     def fit(self):
         best_seen = 0
         best_unseen = 0
         best_H = 0
+        best_cm = []
         for epoch in range(self.nepoch):
             entr_seen = 0
             entr_unseen = 0
@@ -99,17 +102,22 @@ class CLASSIFIER:
 
             # GZSL Evaluation using OD
             ent_thresh = entr_seen.data/self.ntrain
-            acc_seen = self.val_gzsl(self.test_seen_feature, self.test_seen_label,
+            acc_seen, acc_per_seencls, cm_seen = self.val_gzsl(self.test_seen_feature, self.test_seen_label,
                                      self.seenclasses, ent_thresh, seen_classes=True)
-            acc_unseen = self.val_gzsl(self.test_unseen_feature, self.test_unseen_label,
+            acc_unseen, acc_per_unseencls, cm_unseen = self.val_gzsl(self.test_unseen_feature, self.test_unseen_label,
                                        self.unseenclasses, ent_thresh, seen_classes=False)
             H = 2*acc_seen*acc_unseen / (acc_seen+acc_unseen+1e-12)
             if H > best_H:
                 best_seen = acc_seen
+                best_acc_per_seen = acc_per_seencls
+                best_cm_seen = cm_seen
+
                 best_unseen = acc_unseen
+                best_acc_per_unseen = acc_per_unseencls
+                best_cm_unseen = cm_unseen
                 best_H = H
                         
-        return best_seen, best_unseen, best_H
+        return best_seen, best_unseen, best_cm_seen, best_cm_unseen, best_H
     
     # Batch Sampler for seen data              
     def next_batch(self, batch_size):
@@ -187,8 +195,12 @@ class CLASSIFIER:
         seen_mask = entropy_tensor < thresh
         if not seen_classes:
             seen_mask = ~seen_mask
-        acc = self.compute_per_class_acc_gzsl(test_label, predicted_label, target_classes, seen_mask)
-        return acc
+        acc, acc_per_class = self.compute_per_class_acc_gzsl(test_label, predicted_label, target_classes, seen_mask)
+
+        cm = self.compute_confusion_matrix(util_init.map_label(test_label, target_classes),
+                                           predicted_label, target_classes.size(0))
+
+        return acc, acc_per_class, cm
 
     def compute_per_class_acc_gzsl(self, test_label, predicted_label, target_classes, mask):
         acc_per_class = 0
@@ -198,7 +210,14 @@ class CLASSIFIER:
             # NEED TO FIX: cpu and cuda setting
             acc_per_class += torch.sum((test_label[idx] == predicted_label[idx])*mask[idx].cpu()) / torch.sum(idx)
         acc_per_class /= target_classes.size(0)
-        return acc_per_class
+        acc_mean = acc_per_class.mean()
+        return acc_mean, acc_per_class
+
+
+    # New function: get confusion matrix
+    def compute_confusion_matrix(self, test_label, predicted_label, nclass):
+        return confusion_matrix(test_label, predicted_label)
+
 
     def compute_dec_out(self, test_X, new_size):
         start = 0

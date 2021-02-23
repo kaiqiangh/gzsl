@@ -113,6 +113,8 @@ class DATA_LOADER(object):
                     print("Averaging action and 1st object semantics")
                     self.attribute = torch.add(self.action_wv, self.object1_wv) / 2
 
+                    print(self.attribute.shape)
+
                 else:
                     print("without object semantics:")
                     self.attribute = torch.from_numpy(matcontent['att'].T).float()
