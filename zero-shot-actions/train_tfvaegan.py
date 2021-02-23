@@ -325,11 +325,14 @@ for epoch in range(0,opt.nepoch):
 
         if best_gzsl_acc < clsg.H:
             best_acc_seen, best_acc_unseen, best_gzsl_acc = clsg.acc_seen, clsg.acc_unseen, clsg.H
+            best_acc_per_seen, best_acc_per_unseen = clsg.acc_per_seen, clsg.acc_per_unseen
             best_cm_seen, best_cm_unseen = clsg.cm_seen, clsg.cm_unseen
 
         print('GZSL-OD: Acc seen=%.4f, Acc unseen=%.4f, h=%.4f' % (clsg.acc_seen, clsg.acc_unseen, clsg.H))
-        print('GZSL-OD: seen confusion matrix: \n', best_acc_seen)
-        print('GZSL-OD: unseen confusion matrix: \n', best_acc_unseen)
+        print('GZSL-OD: Acc per seen classes \n', clsg.acc_per_seen)
+        print('GZSL-OD: Acc per seen classes \n', clsg.acc_per_unseen)
+        print('GZSL-OD: seen confusion matrix: \n', clsg.cm_seen)
+        print('GZSL-OD: unseen confusion matrix: \n', clsg.cm_unseen)
 
     # Zero-shot learning
     # Train ZSL classifier

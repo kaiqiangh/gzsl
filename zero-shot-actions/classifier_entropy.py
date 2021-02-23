@@ -65,7 +65,7 @@ class CLASSIFIER:
         self.index_in_epoch_syn = 0
         self.ntrain = self.train_X.size()[0]
 
-        self.acc_seen, self.acc_unseen, self.H, self.cm_seen, self.cm_unseen = self.fit()
+        self.acc_seen, self.acc_unseen, self.H, self.acc_per_seen, self.acc_per_unseen, self.cm_seen, self.cm_unseen = self.fit()
     
     def fit(self):
         best_seen = 0
@@ -117,7 +117,7 @@ class CLASSIFIER:
                 best_cm_unseen = cm_unseen
                 best_H = H
                         
-        return best_seen, best_unseen, best_H, best_cm_seen, best_cm_unseen
+        return best_seen, best_unseen, best_H, best_acc_per_seen, best_acc_per_unseen, best_cm_seen, best_cm_unseen
     
     # Batch Sampler for seen data              
     def next_batch(self, batch_size):
