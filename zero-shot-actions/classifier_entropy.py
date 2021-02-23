@@ -117,7 +117,7 @@ class CLASSIFIER:
                 best_cm_unseen = cm_unseen
                 best_H = H
                         
-        return best_seen, best_unseen, best_cm_seen, best_cm_unseen, best_H
+        return best_seen, best_unseen, best_H, best_cm_seen, best_cm_unseen
     
     # Batch Sampler for seen data              
     def next_batch(self, batch_size):
