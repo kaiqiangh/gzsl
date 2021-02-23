@@ -105,7 +105,7 @@ class DATA_LOADER(object):
                 elif opt.avg_wv:
                     self.attribute = torch.from_numpy(matcontent['att_all'].T).float()
                     self.action_wv = torch.from_numpy(matcontent['att'].T).float()
-                    self.object1_wv = self.attribute[:, :600]
+                    self.object1_wv = self.attribute[:, 300:600]
                     self.object2_wv = self.attribute[:, 600:900]
                     self.object3_wv = self.attribute[:, 900:]
 
