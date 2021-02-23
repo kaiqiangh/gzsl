@@ -195,22 +195,22 @@ class CLASSIFIER:
         seen_mask = entropy_tensor < thresh
         if not seen_classes:
             seen_mask = ~seen_mask
-        acc, acc_per_class = self.compute_per_class_acc_gzsl(test_label, predicted_label, target_classes, seen_mask)
+        acc, acc_per_class = self.compute_per_class_acc_gzsl(test_label, predicted_label, target_classes, \
+                                                             target_classes.size(0), seen_mask)
 
         cm = self.compute_confusion_matrix(util_init.map_label(test_label, target_classes),
                                            predicted_label, target_classes.size(0))
 
         return acc, acc_per_class, cm
 
-    def compute_per_class_acc_gzsl(self, test_label, predicted_label, target_classes, mask):
-        acc_per_class = 0
+    def compute_per_class_acc_gzsl(self, test_label, predicted_label, target_classes, nclass, mask):
+        acc_per_class = torch.FloatTensor(nclass).fill_(0)
         test_label = util_init.map_label(test_label, target_classes)  # required to map for both classifiers
         for i in range(target_classes.size(0)):
             idx = (test_label == i)
             # NEED TO FIX: cpu and cuda setting
-            acc_per_class += torch.sum((test_label[idx] == predicted_label[idx])*mask[idx].cpu()) / torch.sum(idx)
-        acc_per_class /= target_classes.size(0)
-        acc_mean = acc_per_class.mean()
+            acc_per_class[i] = torch.sum((test_label[idx] == predicted_label[idx])*mask[idx].cpu()) / torch.sum(idx)
+            acc_mean = acc_per_class.mean()
         return acc_mean, acc_per_class
 
 
