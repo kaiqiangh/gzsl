@@ -58,12 +58,12 @@ class DATA_LOADER(object):
                     # att_all: 300 + 900d
                     print("with object semantics:")
                     #print("append 3 objects - 1200d")
-                    #self.attribute = torch.from_numpy(matcontent['att_all'].T).float()
+                    self.attribute = torch.from_numpy(matcontent['att_all'].T).float()
                     # Different cases:
                     ################################################################################################
                     # Case 1: Replace action wv with object wv (300d)
-                    #print("replace action wv with 1st object")
-                    #self.attribute = self.attribute[:, 300:600]
+                    print("replace action wv with 1st object")
+                    self.attribute = self.attribute[:, 300:600]
 
                     #print("replace action wv with 2nd object")
                     #self.attribute = self.attribute[:, 600:900]
