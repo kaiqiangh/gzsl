@@ -48,7 +48,7 @@ os.system('''python /content/gzsl/zero-shot-actions/train_tfvaegan.py \
 # --object
 # --avg_wv
 os.system('''python /content/gzsl/zero-shot-actions/train_tfvaegan.py \
---encoded_noise --workers 8 --nclass_all 20 \
+--encoded_noise --object --workers 8 --nclass_all 20 \
 --dataset ucf101 --dataroot /content/drive/MyDrive/colab_data/action_datasets_small \
 --syn_num 600 --preprocessing --cuda --gammaD 10 --gammaG 10 \
 --action_embedding i3d --class_embedding wv \
