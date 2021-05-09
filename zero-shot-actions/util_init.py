@@ -68,14 +68,14 @@ class DATA_LOADER(object):
                     #print("replace action wv with 2nd object")
                     #self.attribute = self.attribute[:, 600:900]
 
-                    print("replace action wv with 3rd object")
-                    self.attribute = self.attribute[:, 900:]
+                    #print("replace action wv with 3rd object")
+                    #self.attribute = self.attribute[:, 900:]
 
                     ################################################################################################
 
                     # Case 2: Append 1 object (600d)
-                    #print("append 1st obj.")
-                    #self.attribute = self.attribute[:, :600]
+                    print("append 1st obj.")
+                    self.attribute = self.attribute[:, :600]
 
                     #print("append 2nd obj.")
                     # a[:,2:6] - including index 2 and excluding index 6
