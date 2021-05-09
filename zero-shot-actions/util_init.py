@@ -41,7 +41,7 @@ class DATA_LOADER(object):
             # load action dataset splits and semantics
             # for inistal exp. (20 classes)
             #matcontent = sio.loadmat(opt.dataroot + "/" + opt.dataset + "/" + "att_split_6classes.mat")
-            matcontent = sio.loadmat(opt.dataroot + "/" + opt.dataset + "/" + "att_split_10classes.mat")
+            matcontent = sio.loadmat(opt.dataroot + "/" + opt.dataset + "/" + "att_split_20classes.mat")
 
             # trainval_loc = matcontent['trainval_loc'].squeeze() - 1
             train_loc = matcontent['train_loc'].squeeze() - 1
@@ -57,8 +57,8 @@ class DATA_LOADER(object):
                 if opt.object:
                     # att_all: 300 + 900d
                     print("with object semantics:")
-                    print("append 3 objects - 1200d")
-                    self.attribute = torch.from_numpy(matcontent['att_all'].T).float()
+                    #print("append 3 objects - 1200d")
+                    #self.attribute = torch.from_numpy(matcontent['att_all'].T).float()
                     # Different cases:
                     ################################################################################################
                     # Case 1: Replace action wv with object wv (300d)

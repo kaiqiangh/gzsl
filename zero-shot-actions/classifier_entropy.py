@@ -71,7 +71,11 @@ class CLASSIFIER:
         best_seen = 0
         best_unseen = 0
         best_H = 0
-        best_cm = []
+        best_acc_per_seen = []
+        best_acc_per_unseen = []
+        best_cm_seen = []
+        best_cm_unseen = []
+
         for epoch in range(self.nepoch):
             entr_seen = 0
             entr_unseen = 0

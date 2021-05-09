@@ -330,7 +330,7 @@ for epoch in range(0,opt.nepoch):
 
         print('GZSL-OD: Acc seen=%.4f, Acc unseen=%.4f, h=%.4f' % (clsg.acc_seen, clsg.acc_unseen, clsg.H))
         print('GZSL-OD: Acc per seen classes \n', clsg.acc_per_seen)
-        print('GZSL-OD: Acc per seen classes \n', clsg.acc_per_unseen)
+        print('GZSL-OD: Acc per unseen classes \n', clsg.acc_per_unseen)
         print('GZSL-OD: seen confusion matrix: \n', clsg.cm_seen)
         print('GZSL-OD: unseen confusion matrix: \n', clsg.cm_unseen)
 
@@ -358,7 +358,11 @@ for epoch in range(0,opt.nepoch):
 print('Dataset', opt.dataset)
 print('the best ZSL unseen accuracy is', best_zsl_acc)
 if opt.gzsl_od:
-    print('the best GZSL seen accuracy is', best_acc_seen)
-    print('the best GZSL unseen accuracy is', best_acc_unseen)
+    print('the best GZSL seen accuracy is', best_acc_seen, best_acc_per_seen)
+    print('the best GZSL unseen accuracy is', best_acc_unseen, best_acc_per_unseen)
     print('the best GZSL H is', best_gzsl_acc)
+    print('the best GZSL seen CM', best_cm_seen)
+    print('the best GZSL unseen CM', best_cm_unseen)
+
+
 
