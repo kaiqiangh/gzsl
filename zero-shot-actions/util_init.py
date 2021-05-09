@@ -91,11 +91,11 @@ class DATA_LOADER(object):
                     #print("append 2 objects (1st + 2nd)")
                     #self.attribute = self.attribute[:, :900]
                     # 1st + 3rd
-                    #print("append 2 objects (1st + 3rd)")
-                    #self.attribute = torch.hstack((self.attribute[:, :600], self.attribute[:, 900:]))
+                    print("append 2 objects (1st + 3rd)")
+                    self.attribute = torch.hstack((self.attribute[:, :600], self.attribute[:, 900:]))
                     # 2nd + 3rd
-                    print("append 2 objects (2nd + 3rd)")
-                    self.attribute = torch.hstack((self.attribute[:, :300], self.attribute[:, 600:]))
+                    #print("append 2 objects (2nd + 3rd)")
+                    #self.attribute = torch.hstack((self.attribute[:, :300], self.attribute[:, 600:]))
 
                     ################################################################################################
 
