@@ -15,8 +15,9 @@ class CLASSIFIER:
         self.train_X = _train_X.clone()
         self.train_Y = _train_Y.clone() 
         # No need for init exp.
-        self.test_seen_feature = data_loader.test_seen_feature.clone()
-        self.test_seen_label = data_loader.test_seen_label
+        #self.test_seen_feature = data_loader.test_seen_feature.clone()
+        #self.test_seen_label = data_loader.test_seen_label
+
         self.test_unseen_feature = data_loader.test_unseen_feature.clone()
         self.test_unseen_label = data_loader.test_unseen_label 
         self.seenclasses = data_loader.seenclasses
@@ -36,7 +37,7 @@ class CLASSIFIER:
             self.train_X = self.compute_dec_out(self.train_X, self.input_dim)
             self.test_unseen_feature = self.compute_dec_out(self.test_unseen_feature, self.input_dim)
             # No need for init exp. (zsl setting)
-            self.test_seen_feature = self.compute_dec_out(self.test_seen_feature, self.input_dim)
+            #self.test_seen_feature = self.compute_dec_out(self.test_seen_feature, self.input_dim)
         self.model.apply(util_init.weights_init)
         self.criterion = nn.NLLLoss()
         self.input = torch.FloatTensor(_batch_size, self.input_dim) 
@@ -118,7 +119,7 @@ class CLASSIFIER:
             acc_seen = 0
             acc_unseen = 0
             self.model.eval()
-            acc_seen = self.val_gzsl(self.test_seen_feature, self.test_seen_label, self.seenclasses)
+            #acc_seen = self.val_gzsl(self.test_seen_feature, self.test_seen_label, self.seenclasses)
             acc_unseen = self.val_gzsl(self.test_unseen_feature, self.test_unseen_label, self.unseenclasses)
             H = 2*acc_seen*acc_unseen / (acc_seen+acc_unseen)
             if H > best_H:
