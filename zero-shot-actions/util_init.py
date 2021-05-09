@@ -46,7 +46,7 @@ class DATA_LOADER(object):
             # trainval_loc = matcontent['trainval_loc'].squeeze() - 1
             train_loc = matcontent['train_loc'].squeeze() - 1
             # val_unseen_loc = matcontent['val_loc'].squeeze() - 1
-            test_seen_loc = matcontent['test_seen_loc'].squeeze() - 1
+            #test_seen_loc = matcontent['test_seen_loc'].squeeze() - 1
             test_unseen_loc = matcontent['test_unseen_loc'].squeeze() - 1
 
             if opt.class_embedding == "att":
@@ -139,7 +139,7 @@ class DATA_LOADER(object):
             trainval_loc = matcontent['trainval_loc'].squeeze() - 1
             train_loc = matcontent['train_loc'].squeeze() - 1
             val_unseen_loc = matcontent['val_loc'].squeeze() - 1
-            test_seen_loc = matcontent['test_seen_loc'].squeeze() - 1
+            #test_seen_loc = matcontent['test_seen_loc'].squeeze() - 1
             test_unseen_loc = matcontent['test_unseen_loc'].squeeze() - 1
 
             if opt.class_embedding == "wv":
@@ -174,7 +174,7 @@ class DATA_LOADER(object):
                     # scaler_att = preprocessing.MinMaxScaler()
 
                 _train_feature = scaler.fit_transform(feature[train_loc])
-                _test_seen_feature = scaler.transform(feature[test_seen_loc])
+                #_test_seen_feature = scaler.transform(feature[test_seen_loc])
                 _test_unseen_feature = scaler.transform(feature[test_unseen_loc])
                 self.train_feature = torch.from_numpy(_train_feature).float()
                 mx = self.train_feature.max()
@@ -183,9 +183,9 @@ class DATA_LOADER(object):
                 self.test_unseen_feature = torch.from_numpy(_test_unseen_feature).float()
                 self.test_unseen_feature.mul_(1 / mx)
                 self.test_unseen_label = torch.from_numpy(label[test_unseen_loc]).long()
-                self.test_seen_feature = torch.from_numpy(_test_seen_feature).float()
-                self.test_seen_feature.mul_(1 / mx)
-                self.test_seen_label = torch.from_numpy(label[test_seen_loc]).long()
+                #self.test_seen_feature = torch.from_numpy(_test_seen_feature).float()
+                #self.test_seen_feature.mul_(1 / mx)
+                #self.test_seen_label = torch.from_numpy(label[test_seen_loc]).long()
                 # Scaled and transformed (0,1) attributes (bce: binary class embedding)
                 # self.bce_att = opt.bce_att
                 # select either binary class embedding or norm class embedding for attributes
@@ -203,8 +203,8 @@ class DATA_LOADER(object):
                 self.train_label = torch.from_numpy(label[train_loc]).long()
                 self.test_unseen_feature = torch.from_numpy(feature[test_unseen_loc]).float()
                 self.test_unseen_label = torch.from_numpy(label[test_unseen_loc]).long()
-                self.test_seen_feature = torch.from_numpy(feature[test_seen_loc]).float()
-                self.test_seen_label = torch.from_numpy(label[test_seen_loc]).long()
+                #self.test_seen_feature = torch.from_numpy(feature[test_seen_loc]).float()
+                #self.test_seen_label = torch.from_numpy(label[test_seen_loc]).long()
         else:
             print("Enable cross validation mode")
             self.train_feature = torch.from_numpy(feature[train_loc]).float()
@@ -216,7 +216,7 @@ class DATA_LOADER(object):
         self.unseenclasses = torch.from_numpy(np.unique(self.test_unseen_label.numpy()))
 
         self.ntrain = self.train_feature.size()[0]
-        self.ntest_seen = self.test_seen_feature.size()[0]
+        #self.ntest_seen = self.test_seen_feature.size()[0]
         self.ntest_unseen = self.test_unseen_feature.size()[0]
         self.ntrain_class = self.seenclasses.size(0)
         self.ntest_class = self.unseenclasses.size(0)
