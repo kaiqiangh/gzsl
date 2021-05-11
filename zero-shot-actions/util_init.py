@@ -73,8 +73,7 @@ class DATA_LOADER(object):
                                                    self.attribute[34:72, :300], # 34-71
                                                    self.attribute[72, 600:900], # 72
                                                    self.attribute[73:89, 900:], # 73-88
-                                                   self.attribute[89:, :300], # 89-100
-                                                   ))
+                                                   self.attribute[89:, :300])) # 89-100
 
                     # Case 1: Replace action wv with object wv (300d)
                     #print("replace action wv with 1st object")
