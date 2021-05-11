@@ -58,9 +58,24 @@ class DATA_LOADER(object):
                     # att_all: 300 + 900d
                     print("with object semantics:")
                     #print("append 3 objects - 1200d")
-                    self.attribute = torch.from_numpy(matcontent['att_all'].T).float()
+                    self.attribute = torch.from_numpy(matcontent['att_all'].T).float() # (101, 1200)
                     # Different cases:
-                    ################################################################################################
+                    ###############################################################################################
+                    # Best object Case:
+                    # seen: 3,8,20,26,55.78.88.95.98.100
+                    # unseen (best object): 11 (1), 13(1), 14(2), 33(3), 34(3), 42(1), 73(2), 85(1), 90(3), 92(1)
+                    print("Append best object.")
+                    #self.attribute = torch.hstack((self.attribute[:, :300], self.attribute[:, 600:900]))
+                    self.attribute = torch.hstack((self.attribute[:13, :300], # 0-12
+                                                   self.attribute[13, 600:900], # 13
+                                                   self.attribute[14:32, :300], # 14-31
+                                                   self.attribute[32:34, 900:], # 32, 33
+                                                   self.attribute[34:72, :300], # 34-71
+                                                   self.attribute[72, 600:900], # 72
+                                                   self.attribute[73:89, 900:], # 73-88
+                                                   self.attribute[89:, :300], # 89-100
+                                                   ))
+
                     # Case 1: Replace action wv with object wv (300d)
                     #print("replace action wv with 1st object")
                     #self.attribute = self.attribute[:, 300:600]
@@ -94,8 +109,8 @@ class DATA_LOADER(object):
                     #print("append 2 objects (1st + 3rd)")
                     #self.attribute = torch.hstack((self.attribute[:, :600], self.attribute[:, 900:]))
                     # 2nd + 3rd
-                    print("append 2 objects (2nd + 3rd)")
-                    self.attribute = torch.hstack((self.attribute[:, :300], self.attribute[:, 600:]))
+                    #print("append 2 objects (2nd + 3rd)")
+                    #self.attribute = torch.hstack((self.attribute[:, :300], self.attribute[:, 600:]))
 
                     ################################################################################################
 
