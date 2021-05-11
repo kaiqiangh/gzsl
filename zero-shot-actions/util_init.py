@@ -65,15 +65,18 @@ class DATA_LOADER(object):
                     # seen: 3,8,20,26,55.78.88.95.98.100
                     # unseen (best object): 11 (1), 13(1), 14(2), 33(3), 34(3), 42(1), 73(2), 85(1), 90(3), 92(1)
                     print("Append best object.")
-                    #self.attribute = torch.hstack((self.attribute[:, :300], self.attribute[:, 600:900]))
-                    self.attribute = torch.hstack((self.attribute[:13, :300], # 0-12
-                                                   self.attribute[13, 600:900], # 13
-                                                   self.attribute[14:32, :300], # 14-31
-                                                   self.attribute[32:34, 900:], # 32, 33
-                                                   self.attribute[34:72, :300], # 34-71
-                                                   self.attribute[72, 600:900], # 72
-                                                   self.attribute[73:89, 900:], # 73-88
-                                                   self.attribute[89:, :300])) # 89-100
+                    #self.attribute = torch.hstack((self.attribute[:, :300], self.attribute[:, 900:]))
+                    self.attribute = torch.vstack((self.attribute[:13, :600], # 0-12 (1st)
+                                                   torch.hstack((self.attribute[13, :300], self.attribute[13, 600:900])), # 13 (2nd)
+                                                   self.attribute[14:32, :600], # 14-31 (1st)
+                                                   torch.hstack((self.attribute[32:34, :300], self.attribute[32:34, 900:])), # 32, 33 (3rd)
+                                                   self.attribute[34:72, :600], # 34-71 (1st)
+                                                   torch.hstack((self.attribute[72, :300], self.attribute[72, 600:900])), # 72 (2nd)
+                                                   torch.hstack((self.attribute[73:89 :300], self.attribute[73:89, 900:])), # 73-88 (3rd)
+                                                   self.attribute[89:, :600])   # 89-100 (1st)
+                                                   )
+
+
 
                     # Case 1: Replace action wv with object wv (300d)
                     #print("replace action wv with 1st object")
