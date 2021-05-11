@@ -63,17 +63,18 @@ class DATA_LOADER(object):
                     ###############################################################################################
                     # Best object Case:
                     # seen: 3,8,20,26,55.78.88.95.98.100
-                    # unseen (best object): 11 (1), 13(1), 14(2), 33(3), 34(3), 42(1), 73(2), 85(1), 90(3), 92(1)
+                    # unseen (best object): 11 (2), 13(1), 14(2), 33(3), 34(3), 42(1), 73(1), 85(1), 90(3), 92(1)
                     print("Append best object.")
                     #self.attribute = torch.hstack((self.attribute[:, :300], self.attribute[:, 900:]))
-                    self.attribute = torch.vstack((self.attribute[:13, :600], # 0-12 (1st)
+                    self.attribute = torch.vstack((self.attribute[:10, :600], # 0-10 (1st)
+                                                   torch.hstack((self.attribute[10, :300], self.attribute[10, 600:900])), # 11 (2nd)
+                                                   self.attribute[11:13, :600],  # 12 (1st)
                                                    torch.hstack((self.attribute[13, :300], self.attribute[13, 600:900])), # 13 (2nd)
-                                                   self.attribute[14:32, :600], # 14-31 (1st)
-                                                   torch.hstack((self.attribute[32:34, :300], self.attribute[32:34, 900:])), # 32, 33 (3rd)
-                                                   self.attribute[34:72, :600], # 34-71 (1st)
-                                                   torch.hstack((self.attribute[72, :300], self.attribute[72, 600:900])), # 72 (2nd)
-                                                   torch.hstack((self.attribute[73:89 :300], self.attribute[73:89, 900:])), # 73-88 (3rd)
-                                                   self.attribute[89:, :600])   # 89-100 (1st)
+                                                   self.attribute[14:32, :600], # 14-32 (1st)
+                                                   torch.hstack((self.attribute[32:34, :300], self.attribute[32:34, 900:])), # 33, 34 (3rd)
+                                                   self.attribute[34:89, :600], # 35-89 (1st)
+                                                   torch.hstack((self.attribute[89, :300], self.attribute[89, 900:])), # 90 (3rd)
+                                                   self.attribute[90:, :600])   # 91-100 (1st)
                                                    )
 
 
