@@ -82,8 +82,31 @@ class DATA_LOADER(object):
                     # seen: 1st object; Unseen: best object
                     # seen: 3,8,20,26,55.78.88.95.98.100
                     # unseen (best object): 11 (2), 13(1), 14(2), 33(3), 34(3), 42(1), 73(1), 85(1), 90(3), 92(1)
-                    print("Replace action with best object.")
-                    self.attribute = torch.vstack((self.attribute[:10, 300:600], # 0-9 (1st)
+                    #print("Replace action with best object.")
+                    #self.attribute = torch.vstack((self.attribute[:10, 300:600], # 0-9 (1st)
+                    #                           self.attribute[10, 600:900], # 10 (2nd)
+                    #                           self.attribute[11:13, 300:600],  # 11, 12 (1st)
+                    #                           self.attribute[13, 600:900], # 13 (2nd)
+                    #                           self.attribute[14:32, 300:600], # 14-31 (1st)
+                    #                           self.attribute[32:34, 900:], # 32, 33 (3rd)
+                    #                           self.attribute[34:89, 300:600], # 34-88 (1st)
+                    #                           self.attribute[89, 900:], # 89 (3rd)
+                    #                           self.attribute[90:, 300:600]))   # 90-100 (1st)
+
+
+                    # Case: Average action with best object
+                    print("Average action with best object.")
+                    self.action = torch.vstack((self.attribute[:10, :300], # 0-9 (1st)
+                                                self.attribute[10, :300], # 10 (2nd)
+                                                self.attribute[11:13, :300],  # 11, 12 (1st)
+                                                self.attribute[13, :300], # 13 (2nd)
+                                                self.attribute[14:32, :300], # 14-31 (1st)
+                                                self.attribute[32:34, :300], # 32, 33 (3rd)
+                                                self.attribute[34:89, :300], # 34-88 (1st)
+                                                self.attribute[89, :300], # 89 (3rd)
+                                                self.attribute[90:, :300]))   # 90-100 (1st)
+
+                    self.obj = torch.vstack((self.attribute[:10, 300:600], # 0-9 (1st)
                                                 self.attribute[10, 600:900], # 10 (2nd)
                                                 self.attribute[11:13, 300:600],  # 11, 12 (1st)
                                                 self.attribute[13, 600:900], # 13 (2nd)
@@ -92,6 +115,9 @@ class DATA_LOADER(object):
                                                 self.attribute[34:89, 300:600], # 34-88 (1st)
                                                 self.attribute[89, 900:], # 89 (3rd)
                                                 self.attribute[90:, 300:600]))   # 90-100 (1st)
+
+                    self.attribute = torch.hstack((self.action, self.obj))
+
 
 
                     # Case 1: Replace action wv with object wv (300d)
