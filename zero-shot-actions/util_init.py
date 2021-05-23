@@ -116,7 +116,7 @@ class DATA_LOADER(object):
                                                 self.attribute[89, 900:], # 89 (3rd)
                                                 self.attribute[90:, 300:600]))   # 90-100 (1st)
 
-                    self.attribute = torch.hstack((self.action, self.obj))
+                    self.attribute = (self.action + self.obj) / 2
 
 
 
