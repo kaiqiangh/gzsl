@@ -59,6 +59,36 @@ class DATA_LOADER(object):
                     print("with object semantics:")
                     #print("append 3 objects - 1200d")
                     self.attribute = torch.from_numpy(matcontent['att_all'].T).float() # (101, 1200)
+                    # action vector
+                    #self.action = torch.vstack((self.attribute[:10, :300],
+                    #                            self.attribute[10, :300],
+                    #                           self.attribute[11:13, :300],
+                    #                           self.attribute[13, :300],
+                    #                           self.attribute[14:32, :300],
+                    #                           self.attribute[32:34, :300],
+                    #                           self.attribute[34:89, :300],
+                    #                           self.attribute[89, :300],
+                    #                           self.attribute[90:, :300]))
+
+                    self.action = self.attribute[:, :300]
+
+                    # best object vector
+                    self.best_obj = torch.vstack((self.attribute[:10, 300:600],  # 0-9 (1st)
+                                                  self.attribute[10, 600:900],  # 10 (2nd)
+                                                  self.attribute[11:13, 300:600],  # 11, 12 (1st)
+                                                  self.attribute[13, 600:900],  # 13 (2nd)
+                                                  self.attribute[14:32, 300:600],  # 14-31 (1st)
+                                                  self.attribute[32:34, 900:],  # 32, 33 (3rd)
+                                                  self.attribute[34:89, 300:600],  # 34-88 (1st)
+                                                  self.attribute[89, 900:],  # 89 (3rd)
+                                                  self.attribute[90:, 300:600]))  # 90-100 (1st)
+                    # The first object.
+                    self.obj1 = self.attribute[:, :300]
+                    # The second object.
+                    self.obj2 = self.attribute[:, 600:900]
+                    # The third object.
+                    self.obj3 = self.attribute[:, 900:]
+
                     # Different cases:
                     ###############################################################################################
                     # Case: Best object
@@ -93,33 +123,26 @@ class DATA_LOADER(object):
                     #                           self.attribute[89, 900:], # 89 (3rd)
                     #                           self.attribute[90:, 300:600]))   # 90-100 (1st)
 
+                    ####################################################################################
+                    # Average Experiments
+                    # Case: Average action with best object
+                    #print("Average action with best object.")
+                    #self.attribute = (self.action + self.best_obj) / 2
 
                     # Case: Average action with best object
-                    print("Average action with best object.")
-                    self.action = torch.vstack((self.attribute[:10, :300], # 0-9 (1st)
-                                                self.attribute[10, :300], # 10 (2nd)
-                                                self.attribute[11:13, :300],  # 11, 12 (1st)
-                                                self.attribute[13, :300], # 13 (2nd)
-                                                self.attribute[14:32, :300], # 14-31 (1st)
-                                                self.attribute[32:34, :300], # 32, 33 (3rd)
-                                                self.attribute[34:89, :300], # 34-88 (1st)
-                                                self.attribute[89, :300], # 89 (3rd)
-                                                self.attribute[90:, :300]))   # 90-100 (1st)
+                    #print("Average action with best object.")
+                    #self.attribute = (self.action + self.best_obj) / 2
 
-                    self.obj = torch.vstack((self.attribute[:10, 300:600], # 0-9 (1st)
-                                                self.attribute[10, 600:900], # 10 (2nd)
-                                                self.attribute[11:13, 300:600],  # 11, 12 (1st)
-                                                self.attribute[13, 600:900], # 13 (2nd)
-                                                self.attribute[14:32, 300:600], # 14-31 (1st)
-                                                self.attribute[32:34, 900:], # 32, 33 (3rd)
-                                                self.attribute[34:89, 300:600], # 34-88 (1st)
-                                                self.attribute[89, 900:], # 89 (3rd)
-                                                self.attribute[90:, 300:600]))   # 90-100 (1st)
+                    # Case: Average(Class, 1 object, 2 object, 3 object)
+                    print("Average(Class, 1 object, 2 object, 3 object)")
+                    self.attribute = (self.action + self.obj1 + self.obj2 + self.obj3) / 4
 
-                    self.attribute = (self.action + self.obj) / 2
+                    # Case: Average(1 object, 2 object, 3 object)
+                    #print("Average(1 object, 2 object, 3 object)")
+                    #self.attribute = (self.obj1 + self.obj2 + self.obj3) / 3
 
 
-
+                    ####################################################################################
                     # Case 1: Replace action wv with object wv (300d)
                     #print("replace action wv with 1st object")
                     #self.attribute = self.attribute[:, 300:600]
