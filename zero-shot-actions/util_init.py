@@ -129,17 +129,37 @@ class DATA_LOADER(object):
                     #print("Average action with best object.")
                     #self.attribute = (self.action + self.best_obj) / 2
 
-                    # Case: Average action with best object
-                    #print("Average action with best object.")
-                    #self.attribute = (self.action + self.best_obj) / 2
-
                     # Case: Average(Class, 1 object, 2 object, 3 object)
-                    print("Average(Class, 1 object, 2 object, 3 object)")
-                    self.attribute = (self.action + self.obj1 + self.obj2 + self.obj3) / 4
+                    #print("Average(Class, 1 object, 2 object, 3 object)")
+                    #self.attribute = (self.action + self.obj1 + self.obj2 + self.obj3) / 4
 
                     # Case: Average(1 object, 2 object, 3 object)
-                    #print("Average(1 object, 2 object, 3 object)")
-                    #self.attribute = (self.obj1 + self.obj2 + self.obj3) / 3
+                    print("Average(1 object, 2 object, 3 object)")
+                    self.attribute = (self.obj1 + self.obj2 + self.obj3) / 3
+
+                    # Case: Average(Class, 1 object)
+                    #print("Average(Class, 1 object)")
+                    #self.attribute = (self.action + self.obj1) / 2
+
+                    # Case: Average(Class, 2 object)
+                    # print ("Average(Class, 2 object)")
+                    # self.attribute = (self.action + self.obj2) / 2
+
+                    # Case: Average(Class, 3 object)
+                    # print ("Average(Class, 3 object)")
+                    # self.attribute = (self.action + self.obj3) / 2
+
+                    # Case: Average(Class, 1 object, 2 object)
+                    # print ("Average(Class, 1 object, 2 object)")
+                    # self.attribute = (self.action + self.obj1 + self.obj2) / 3
+
+                    # Case: Average(Class, 1 object, 3 object)
+                    # print ("Average(Class, 1 object, 3 object)")
+                    # self.attribute = (self.action + self.obj1 + self.obj3) / 3
+
+                    # Case: Average(Class, 2 object, 3 object)
+                    # print ("Average(Class, 2 object, 3 object)")
+                    # self.attribute = (self.action + self.obj2 + self.obj3) / 3
 
 
                     ####################################################################################
