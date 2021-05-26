@@ -138,12 +138,12 @@ class DATA_LOADER(object):
                     #self.attribute = (self.obj1 + self.obj2 + self.obj3) / 3
 
                     # Case: Average(Class, 1 object)
-                    print("Average(Class, 1 object)")
-                    self.attribute = (self.action + self.obj1) / 2
+                    #print("Average(Class, 1 object)")
+                    #self.attribute = (self.action + self.obj1) / 2
 
                     # Case: Average(Class, 2 object)
-                    # print ("Average(Class, 2 object)")
-                    # self.attribute = (self.action + self.obj2) / 2
+                    print ("Average(Class, 2 object)")
+                    self.attribute = (self.action + self.obj2) / 2
 
                     # Case: Average(Class, 3 object)
                     # print ("Average(Class, 3 object)")
